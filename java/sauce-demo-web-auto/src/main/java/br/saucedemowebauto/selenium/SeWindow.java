@@ -55,12 +55,15 @@ public class SeWindow {
      * mapeado pelo objeto <code>By</code> esteja presente.
      * @param by mapeamento do elemento Web.
      * @param seconds tempo de timeout especificado em segundos.
+     * @return elemento encontrado.
      */
-    public static void waitToBeDisplayed(By by, int seconds) {
+    public static WebElement waitToBeDisplayed(By by, int seconds) {
         Duration duration = Duration.ofSeconds(seconds);
         WebDriver webDriver = SeConfig.getSeConfig().getWebDriver();
         Wait<WebDriver> wait = new WebDriverWait(webDriver, duration);
-        wait.until(f -> findElement(by).isDisplayed());
+        WebElement webElement = findElement(by);
+        wait.until(f -> webElement.isDisplayed());
+        return webElement;
     }
 
     /**
@@ -68,12 +71,15 @@ public class SeWindow {
      * mapeado pelo objeto <code>By</code> esteja habilitado.
      * @param by mapeamento do elemento Web.
      * @param seconds tempo de timeout especificado em segundos.
+     * @return elemento encontrado.
      */
-    public static void waitToBeEnabled(By by, int seconds) {
+    public static WebElement waitToBeEnabled(By by, int seconds) {
         Duration duration = Duration.ofSeconds(seconds);
         WebDriver webDriver = SeConfig.getSeConfig().getWebDriver();
         Wait<WebDriver> wait = new WebDriverWait(webDriver, duration);
-        wait.until(f -> findElement(by).isEnabled());
+        WebElement webElement = findElement(by);
+        wait.until(f -> webElement.isEnabled());
+        return webElement;
     }
 
     /**
@@ -81,12 +87,15 @@ public class SeWindow {
      * mapeado pelo objeto <code>By</code> esteja selecionado.
      * @param by mapeamento do elemento Web.
      * @param seconds tempo de timeout especificado em segundos.
+     * @return elemento encontrado.
      */
-    public static void waitToBeSelected(By by, int seconds) {
+    public static WebElement waitToBeSelected(By by, int seconds) {
         Duration duration = Duration.ofSeconds(seconds);
         WebDriver webDriver = SeConfig.getSeConfig().getWebDriver();
         Wait<WebDriver> wait = new WebDriverWait(webDriver, duration);
+        WebElement webElement = findElement(by);
         wait.until(f -> findElement(by).isSelected());
+        return webElement;
     }
 
 }
