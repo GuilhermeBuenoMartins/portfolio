@@ -1,0 +1,44 @@
+version: "1.0"
+services:
+  debian-env:
+    image: "mcr.microsoft.com/vscode/devcontainers/java:0-11-buster"
+    build: .
+    volumes:
+      - ../..:/workspaces:cached
+    network_mode: service:selenium-hub
+    command: sleep infinity
+
+  chrome:
+    image: selenium/node-chrome:beta
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+
+  edge:
+    image: selenium/node-edge:beta
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub 
+
+  firefox:
+    image: selenium/node-firefox:beta
+    shm_size: 2gb
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub 
+
+  selenium-hub:
+    image: selenium/hub:latest
+    container_name: selenium_hub
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+
+volumes:
+  dev-volume:
