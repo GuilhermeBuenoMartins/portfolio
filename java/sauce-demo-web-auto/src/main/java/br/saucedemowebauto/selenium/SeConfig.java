@@ -39,8 +39,7 @@ public class SeConfig {
 
     private WebDriver webDriver;
 
-    private SeConfig(Scenario scenario) {
-        this.scenario = scenario;
+    private SeConfig() {
     }
 
     /**
@@ -51,8 +50,9 @@ public class SeConfig {
      */
     public static SeConfig instantiate(Scenario scenario) {
         if (seConfig == null) {
-            seConfig = new SeConfig(scenario);
+            seConfig = new SeConfig();
         }
+        seConfig.scenario = scenario;
         return seConfig;
     }
 
