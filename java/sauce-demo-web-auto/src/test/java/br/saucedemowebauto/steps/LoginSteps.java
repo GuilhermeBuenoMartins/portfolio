@@ -38,4 +38,13 @@ public class LoginSteps {
         assertNotEquals(urlPageNotExpected, SeConfig.getSeConfig().getWebDriver().getCurrentUrl());
     }
 
+    @Then("usuario e direcionado a pagina Login")
+    public void usuarioEDirecionadoAPaginaLogin() {
+        final String titlePageExpected = "Swag Labs";
+        final String urlPageExpected = "https://www.saucedemo.com/";
+        SeWindow.takeScreenshot();
+        assertEquals(titlePageExpected, loginPage.getSwagLabsTitle());
+        assertEquals(urlPageExpected, SeConfig.getSeConfig().getWebDriver().getCurrentUrl());
+    }
+
 }

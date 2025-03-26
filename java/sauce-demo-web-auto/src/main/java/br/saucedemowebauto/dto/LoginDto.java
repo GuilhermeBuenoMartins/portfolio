@@ -1,7 +1,5 @@
 package br.saucedemowebauto.dto;
 
-import java.util.Map;
-
 public class LoginDto {
 
     private String username;
