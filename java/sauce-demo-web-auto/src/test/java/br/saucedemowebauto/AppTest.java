@@ -11,7 +11,6 @@ import io.cucumber.junit.CucumberOptions.SnippetType;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(
-    tags = "@menu_lateral and @products",
     snippets = SnippetType.CAMELCASE,
     features = "src/test/resources",
     plugin = {"pretty", "html:target/cucumber/report.html"}

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public enum MenuLateral {
 
-    ALL_ITEMS("All Items"), ABOUT("About"), LOGOUT("Logout"), RESET_APP_STATE("Reset App Store");
+    ALL_ITEMS("All Items"), ABOUT("About"), LOGOUT("Logout"), RESET_APP_STATE("Reset App State");
 
     private String text;
 
