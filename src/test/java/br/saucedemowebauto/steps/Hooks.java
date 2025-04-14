@@ -2,6 +2,7 @@ package br.saucedemowebauto.steps;
 
 import java.lang.reflect.Type;
 
+import br.saucedemowebauto.dto.ProductDto;
 import br.saucedemowebauto.selenium.SeConfig;
 import br.saucedemowebauto.selenium.SeWindow;
 import io.cucumber.core.internal.com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,20 @@ import io.cucumber.java.Scenario;
 public class Hooks {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    
+    protected static ProductDto productDto;
+
+    @DataTableType
+    public String stringType(String cell) {
+        return cell == null ? "" : cell;
+    }
+
+    @DefaultParameterTransformer()
+    @DefaultDataTableEntryTransformer
+    @DefaultDataTableCellTransformer
+    public Object transformer(Object fromValue, Type toValueType) {
+        return objectMapper.convertValue(fromValue, objectMapper.constructType(toValueType));
+    }
 
     @Before(order = 1)
     public static void before(Scenario scenario) {
@@ -28,18 +43,6 @@ public class Hooks {
         if (SeConfig.getSeConfig() != null) {
             SeConfig.getSeConfig().closeWebDriver();
         }
-    }
-
-    @DataTableType
-    public String stringType(String cell) {
-        return cell == null ? "" : cell;
-    }
-
-    @DefaultParameterTransformer()
-    @DefaultDataTableEntryTransformer
-    @DefaultDataTableCellTransformer
-    public Object transformer(Object fromValue, Type toValueType) {
-        return objectMapper.convertValue(fromValue, objectMapper.constructType(toValueType));
     }
 
 }

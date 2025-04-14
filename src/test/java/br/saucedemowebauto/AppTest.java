@@ -11,6 +11,7 @@ import io.cucumber.junit.CucumberOptions.SnippetType;
  */
 @RunWith(Cucumber.class)
 @CucumberOptions(
+    tags = "@access_product",
     snippets = SnippetType.CAMELCASE,
     features = "src/test/resources",
     plugin = {"pretty", "html:target/cucumber/report.html"}
