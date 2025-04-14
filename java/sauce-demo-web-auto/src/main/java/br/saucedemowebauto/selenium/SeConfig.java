@@ -43,10 +43,11 @@ public class SeConfig {
     }
 
     /**
-     * Criar e retorna uma nova instância de <code>SeConfig</code>.
+     * Cria e retorna a instância {@code SeConfig}, se ainda não criada.
+     * Também atualiza o cenário pelo objeto {@code Scenario} fornecido.
      * 
-     * @param scenario objeto <code>Scenario</code> do Cucumber.
-     * @return uma nova instância do <code>SeConfig</code>.
+     * @param scenario objeto {@code Scenario} do Cucumber.
+     * @return a instância de {@code SeConfig}.
      */
     public static SeConfig instantiate(Scenario scenario) {
         if (seConfig == null) {
@@ -57,8 +58,7 @@ public class SeConfig {
     }
 
     /**
-     * @return uma instância já criada de <code>SeConfig</code> ou <code>null
-     * </code>, caso contrário.
+     * @return uma instância já criada de {@code SeConfig} ou {@code null}, caso contrário.
      */
     public static SeConfig getSeConfig() {
         return seConfig;
@@ -75,15 +75,14 @@ public class SeConfig {
     }
 
     /**
-     * @return propriedades carregadas a partir do arquivo <code>
-     * selenium.properties</code>
+     * @return propriedades carregadas a partir do arquivo {@code selenium.properties}
      */
     public Properties getProperties() {
         return properties == null ? loadProperties() : properties;
     }
 
     /**
-     * @return uma nova instância padrão do tipo <code>ChromeOptions</code>.
+     * @return uma nova instância padrão do tipo {@code ChromeOptions}.
      */
     public ChromeOptions getDefaultChromeOptions() {
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -98,7 +97,7 @@ public class SeConfig {
     }
 
     /**
-     * @return uma nova instância padrão do tipo <code>EdgeOptions</code>..
+     * @return uma nova instância padrão do tipo {@code EdgeOptions}.
      */
     public EdgeOptions getDefaultEdgeOptions() {
         EdgeOptions edgeOptions = new EdgeOptions();
@@ -113,7 +112,7 @@ public class SeConfig {
     }
 
     /**
-     * @return uma nova instância padrão do tipo <code>FirefoxOptions</code>.
+     * @return uma nova instância padrão do tipo {@code FirefoxOptions}.
      */
     public FirefoxOptions getDefaultFirefoxOptions() {
         FirefoxOptions firefoxOptions = new FirefoxOptions();
@@ -127,14 +126,14 @@ public class SeConfig {
         return firefoxOptions;
     }
 
-    /**
-     * Devolve uma nova instância do objeto <code>WebDriver</code> a partir do
-     * objeto <code>Capability</code>.
-     * 
-     * @param capability uma abstração do <code>ChromeOptions</code>, <code>
-     *                   EdgeOptions</code> ou <code>FirefoxOptions</code>.
-     * @return uma nova instância do objeto <code>WebDriver</code>.
-     */
+/**
+ * Devolve uma nova instância do objeto {@code WebDriver} a partir do
+ * objeto {@code Capability}.
+ * 
+ * @param capability uma abstração do {@code ChromeOptions}, {@code EdgeOptions} 
+ *                      ou {@code FirefoxOptions}.
+ * @return uma nova instância do objeto {@code WebDriver}.
+ */
     public WebDriver instantiateWebDriver(Capabilities capability) {
         if (webDriver != null) {
             webDriver.quit();
@@ -150,13 +149,12 @@ public class SeConfig {
     }
 
     /**
-     * Devolve uma nova instância do objeto <code>WebDriver</code> com a partir de
-     * um <code>ChromeOptions</code>, <code>EdgeOptions</code> ou <code>
-     * FirefoxOptions</code> padrão de acordo com o valor do Enum <code> Browser
-     * </code>.
+     * Devolve uma nova instância do objeto {@code WebDriver} com a partir de um
+     * {@code ChromeOptions}, {@code EdgeOptions} ou {@code FirefoxOptions} padrão de
+     * acordo com o valor do Enum {@code  Browser}.
      * 
      * @param browser opções de navegadores do projeto.
-     * @return uma nova instância do objeto <code>WebDriver</code>.
+     * @return uma nova instância do objeto {@code WebDriver}.
      */
     public WebDriver instantiateWebDriver(Browser browser) {
         switch (browser) {
@@ -171,7 +169,7 @@ public class SeConfig {
     }
 
     /**
-     * @return uma nova instância do objeto <code>WebDriver</code>.
+     * @return uma nova instância do objeto {@code WebDriver}.
      */
     public WebDriver instantiateWebDriver() {
         String browser = getProperties().getProperty("selenium.grid.browser", DEFAULT_GRID_BROWSER);
@@ -179,15 +177,14 @@ public class SeConfig {
     }
 
     /**
-     * @return uma nova instância padrão criada ou já existente do <code>
-     * WebDriver</code>.
+     * @return uma nova instância padrão criada ou já existente do {@code WebDriver}.
      */
     public WebDriver getWebDriver() {
         return webDriver == null ? instantiateWebDriver() : webDriver;
     }
 
     /**
-     * @return objeto <code>Scenario</code> do Cucumber.
+     * @return objeto {@code Scenario} do Cucumber.
      */
     public Scenario getScenario() {
         return scenario;
