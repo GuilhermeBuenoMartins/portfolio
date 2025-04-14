@@ -1,33 +1,26 @@
 package br.saucedemowebauto.steps;
 
-import br.saucedemowebauto.dto.LoginDto;
-import br.saucedemowebauto.dto.enums.MenuLateral;
-import br.saucedemowebauto.pages.LoginPage;
-import br.saucedemowebauto.pages.ProductsPage;
+import java.lang.reflect.Type;
+
 import br.saucedemowebauto.selenium.SeConfig;
 import br.saucedemowebauto.selenium.SeWindow;
-import io.cucumber.java.After;
+import io.cucumber.core.internal.com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.java.AfterAll;
 import io.cucumber.java.Before;
 import io.cucumber.java.DataTableType;
+import io.cucumber.java.DefaultDataTableCellTransformer;
+import io.cucumber.java.DefaultDataTableEntryTransformer;
+import io.cucumber.java.DefaultParameterTransformer;
 import io.cucumber.java.Scenario;
 
 public class Hooks {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before(order = 1)
     public static void before(Scenario scenario) {
         SeConfig.instantiate(scenario);
         SeWindow.maximize();
-    }
-
-    @Before(order = 2, value = "not @login or not @menu_lateral")
-    public static void reset() {
-        SeConfig.getSeConfig().getWebDriver().get("https://www.saucedemo.com/");
-        LoginDto loginDto = new LoginDto("standard_user", "secret_sauce");
-        new LoginPage().login(loginDto);
-        ProductsPage productsPage = new ProductsPage();
-        productsPage.selectInMenuLateral(MenuLateral.RESET_APP_STATE);
-        productsPage.selectInMenuLateral(MenuLateral.LOGOUT);
     }
 
     @AfterAll
@@ -40,6 +33,13 @@ public class Hooks {
     @DataTableType
     public String stringType(String cell) {
         return cell == null ? "" : cell;
+    }
+
+    @DefaultParameterTransformer()
+    @DefaultDataTableEntryTransformer
+    @DefaultDataTableCellTransformer
+    public Object transformer(Object fromValue, Type toValueType) {
+        return objectMapper.convertValue(fromValue, objectMapper.constructType(toValueType));
     }
 
 }
