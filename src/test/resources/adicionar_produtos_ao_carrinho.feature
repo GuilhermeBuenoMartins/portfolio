@@ -1,5 +1,5 @@
 #language: en
-@add_to_cart @reset_app_state
+@add_to_cart    @reset_app_state
 Feature: Adicionar produtos ao carrinho
 
     Validar a adição de produtos ao carrinho a partir da tela "Products"
@@ -19,7 +19,7 @@ Feature: Adicionar produtos ao carrinho
         Then o botao Remove substitui o botao Add to Cart
 
     @add_to_cart_2   @altenative
-    Scenario: Validar persistência dos detalhes do produto apos acesso em Products
+    Scenario: Validar botão "Remove" após a adição de produto ao carrinho em acesso ao Produto
         # Escolhe pelo nome do produto, caso vazio (""), a escolha é aleatória.
         Given usuario escolhe produto "" na pagina Products
         When usuario acessa o produto escolhido na pagina Products
