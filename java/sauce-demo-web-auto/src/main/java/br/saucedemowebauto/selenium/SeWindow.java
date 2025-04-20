@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -63,7 +64,10 @@ public final class SeWindow {
      *          <code>false</code>.
      */
     public static boolean exist(By by) {
-        return findElement(by) != null;
+        try { 
+            return findElement(by) != null;
+         } catch (NoSuchElementException exception) {}
+        return  false;
     }
 
     /**
