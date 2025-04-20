@@ -17,7 +17,7 @@ public class LoginSteps {
 
     @Given("usuario acessa o site Swag Labs")
     public void usuarioAcessaOSiteSwagLabs() {
-        String swagLabsUrlKey = "selenium.application.test";
+        final String swagLabsUrlKey = "selenium.application.test";
         Properties properties = SeConfig.getSeConfig().getProperties();
         SeConfig.getSeConfig().getWebDriver().get(properties.getProperty(swagLabsUrlKey));
     }
