@@ -72,5 +72,10 @@ public class ProductDto {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "ProductDto [name=" + name + ", description=" + description + ", price=" + price + "]";
+    }
     
 }

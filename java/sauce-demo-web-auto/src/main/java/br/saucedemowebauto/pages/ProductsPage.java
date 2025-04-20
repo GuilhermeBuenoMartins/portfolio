@@ -1,12 +1,11 @@
 package br.saucedemowebauto.pages;
 
-import java.lang.StackWalker.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.devtools.v120.page.Page.SetWebLifecycleStateState;
 
 import br.saucedemowebauto.dto.ProductDto;
 import br.saucedemowebauto.selenium.SeWindow;
@@ -17,12 +16,16 @@ public class ProductsPage {
 
     private final By productDivs = By.xpath("//*[@data-test='inventory-item']");
 
-    private final By nameProductLabel = By.xpath(".//*[@data-test='inventory-item-name']");
+    private final By productNameLabel = By.xpath(".//*[@data-test='inventory-item-name']");
 
-    private final By descriptionProductText = By.xpath(".//*[@data-test='inventory-item-desc']");
+    private final By productDescriptionText = By.xpath(".//*[@data-test='inventory-item-desc']");
 
-    private final By priceProductLabel = By.xpath(".//*[@class='inventory-item-price']");
+    private final By productPriceLabel = By.xpath(".//*[@data-test='inventory-item-price']");
 
+    private final By removableProductDivs = By.xpath("//*[contains(@data-test, 'remove')]/../../..");
+
+    private final By addToCartButton = By.xpath(".//*[contains(@data-test, 'add-to-cart')]");
+    
     /**
      * Retorna o texto do título da página "Products".
      * 
@@ -47,11 +50,7 @@ public class ProductsPage {
      */
     public ProductDto getProductByIndex(int index) {
         List<WebElement> productList = SeWindow.findElements(productDivs);
-        ProductDto dto = new ProductDto();
-        dto.setName(productList.get(index).findElement(nameProductLabel).getText());
-        dto.setDescription(productList.get(index).findElement(nameProductLabel).getText());
-        dto.setPrice(productList.get(index).findElement(nameProductLabel).getText());
-        return dto;
+        return convertToDto(productList.get(index));
     }
 
     /**
@@ -61,34 +60,79 @@ public class ProductsPage {
      * @return produto da página.
      */
     public ProductDto getProductByName(String name) {
-        List<WebElement> productList = SeWindow.findElements(productDivs);
-        Optional<WebElement> optional = productList.stream().filter(
-            p -> p.findElement(nameProductLabel).getText().equals(name)).findFirst();
-        if (optional.isEmpty()) {
-            String message = "The name product " + name + "could not be found.";
-            throw new IllegalArgumentException(message);
+        WebElement product = searchProdutByName(name);
+        return convertToDto(product);
+    }
+
+    /**
+     * Retorna a lista de produtos que foram adicionados ao carrinho de compras.
+     * Esses produtos são identificados na página "Products" pelo botão "Remove",
+     * indicando que já estão no carrinho.
+     *
+     * @return lista de produtos atualmente no carrinho.
+     */
+    public List<ProductDto> getRemovableProducts() {
+        List<ProductDto> dtos = new ArrayList<>();
+        List<WebElement> removableProducts = SeWindow.findElements(removableProductDivs);
+        removableProducts.stream().forEach(product -> dtos.add(convertToDto(product)));
+        return dtos;
+    }
+
+    /**
+     * Retorna a lista de produtos que não estão adicionados ao carrinho.
+     * Esses produtos são identificados na página "Products" pelo botão
+     * "Add to cart".
+     *
+     * @return lista de produtos disponíveis para adição ao carrinho.
+     */
+    public List<ProductDto> getAddableProducts() {
+        List<ProductDto> dtos = new ArrayList<>();
+        for (WebElement webElement: SeWindow.findElements(productDivs)) {
+            if (webElement.findElement(addToCartButton).isDisplayed()) {
+                dtos.add(convertToDto(webElement));
+            }
         }
+        return dtos;
+    }
+
+    private ProductDto convertToDto(WebElement webElement) {
         ProductDto dto = new ProductDto();
-        dto.setName(optional.get().findElement(nameProductLabel).getText());
-        dto.setDescription(optional.get().findElement(descriptionProductText).getText());
-        dto.setPrice(optional.get().findElement(priceProductLabel).getText());
+        dto.setName(webElement.findElement(productNameLabel).getText());
+        dto.setDescription(webElement.findElement(productDescriptionText).getText());
+        dto.setPrice(webElement.findElement(productPriceLabel).getText());
         return dto;
     }
 
     /**
      * Acessa um produto da página "Products" a partir de seu nome.
+     * 
      * @param name nome do produto.
      */
     public void accessProductByName(String name) {
-        List<WebElement> productList = SeWindow.findElements(productDivs);
-        Optional<WebElement> optional = productList.stream().filter(
-            p -> p.findElement(nameProductLabel).getText().equals(name)).findFirst();
-        if (optional.isEmpty()) {
-            String message = "The name product " + name + "could not be found.";
-            throw new IllegalArgumentException(message);
-        }
-        optional.get().findElement(nameProductLabel).click();
+        WebElement product = searchProdutByName(name);
+        product.findElement(productNameLabel).click();
         SeWindow.takeScreenshot();
     }
-    
+
+    /**
+     * Adiciona um produto ao carrinho de compras a partir de seu nome.
+     * 
+     * @param name nome do produto.
+     */
+    public void addProductByName(String name) {
+        WebElement product = searchProdutByName(name);
+        product.findElement(addToCartButton).click();
+        SeWindow.takeScreenshot();
+    }
+
+    private WebElement searchProdutByName(String name) {
+        List<WebElement> productList = SeWindow.findElements(productDivs);
+        Optional<WebElement> optional = productList.stream()
+            .filter(p -> p.findElement(productNameLabel).getText().equals(name))
+            .findFirst();
+        if (optional.isPresent()) { return optional.get(); }
+        String message = "The product \"" + name + "\" could not be found.";
+        throw new IllegalArgumentException(message);
+    }
+
 }

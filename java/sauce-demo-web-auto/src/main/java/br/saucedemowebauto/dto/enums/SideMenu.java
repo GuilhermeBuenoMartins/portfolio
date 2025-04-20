@@ -4,13 +4,13 @@ import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Optional;
 
-public enum MenuLateral {
+public enum SideMenu {
 
     ALL_ITEMS("All Items"), ABOUT("About"), LOGOUT("Logout"), RESET_APP_STATE("Reset App State");
 
     private String text;
 
-    private MenuLateral(String text) {
+    private SideMenu(String text) {
         this.text = text;
     }
 
@@ -20,10 +20,10 @@ public enum MenuLateral {
      * @param text texto da opção.
      * @return objeto do tipo <code>MenuLateral</code>.
      */
-    public static MenuLateral getMenuLateral(String text) {
-        MenuLateral[] values = MenuLateral.values();
+    public static SideMenu getMenuLateral(String text) {
+        SideMenu[] values = SideMenu.values();
         final String search = text.toUpperCase().trim();
-        Optional<MenuLateral> optional = Arrays.stream(values)
+        Optional<SideMenu> optional = Arrays.stream(values)
                 .filter(value -> value.getText().toUpperCase().equals(search)).findFirst();
         if (optional.isEmpty()) {
             String errorMessage = "Não foi possível encontrar a opção de Menu Lateral de valor '" +
