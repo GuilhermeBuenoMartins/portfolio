@@ -13,6 +13,7 @@ import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.messages.types.Hook;
 
 public class ProductsSteps {
 
@@ -65,39 +66,6 @@ public class ProductsSteps {
         Hooks.productDtos.stream().forEach(product -> page.addProductByName(product.getName()));
     }
 
-    @When("usuario remove o produto {string} na pagina Products")
-    public void usuarioRemoveOProdutoNaPaginaProducts(String name) {
-        if (name.isEmpty()) {
-            int index = new Random().nextInt(Hooks.productDtos.size());
-            Hooks.productDto = (ProductDto) Hooks.productDtos.toArray()[index];
-        } else {
-            Hooks.productDto = page.getProductByName(name);
-        }
-        page.removeProductByName(Hooks.productDto.getName());
-        Hooks.productDtos.removeIf(product -> product.getName().equals(Hooks.productDto.getName()));
-    }
-
-    @When("usuario remove o produto {string} na pagina Products apos acessar Produto")
-    public void usuarioRemoveOProdutoNaPaginaProductsAposAcessarProduto(String name) {
-        if (name.isEmpty()) {
-            int index = new Random().nextInt(Hooks.productDtos.size());
-            Hooks.productDto = (ProductDto) Hooks.productDtos.toArray()[index];
-        } else {
-            Hooks.productDto = page.getProductByName(name);
-        }
-        page.accessProductByName(Hooks.productDto.getName());
-        page.removeProductByName(Hooks.productDto.getName());
-        Hooks.productDtos.removeIf(product -> product.getName().equals(Hooks.productDto.getName()));
-    }
-
-    @When("usuario remove o produtos na pagina Products")
-    public void usuarioRemoveOProdutosNaPaginaProducts(DataTable productNames) {
-        productNames.asList().stream().forEach(name -> {
-            page.removeProductByName(name);
-            Hooks.productDtos.removeIf(product -> product.getName().equals(name));
-        });
-    }
-
     // #endregion
     // #region Then stpes
 
@@ -123,25 +91,6 @@ public class ProductsSteps {
     @Then("o icone de carrinho apresenta a quantidade produtos adicionados")
     public void oIconeDeCarrinhoApresentaAQuantidadeProdutosAdicionados() {
         Assert.assertEquals(Hooks.productDtos.size(), Integer.parseInt(new TopMenu().getCartItemCountLabel()));
-    }
-
-    @Then("o produto removido tem o botao Remove substituido pelo botao Add to Cart")
-    public void oProdutoRemovidoTemOBotaoRemoveSubstituidoPeloBotaoAddToCart() {
-        List<ProductDto> addableProducts = page.getAddableProducts();
-        Assert.assertTrue(addableProducts.contains(Hooks.productDto));
-    }
-
-    @Then("os demais produtos mantem o botao Remove")
-    public void osDemaisProdutosMantemOBotaoRemove() {
-        List<ProductDto> removableProducts = page.getRemovableProducts();
-        Assert.assertArrayEquals(Hooks.productDtos.toArray(), removableProducts.toArray());
-    }
-
-    @Then("o botao Add to Cart substitui o botao Remove")
-    public void oBotaoAddToCartSubstituiOBotaoRemove() {
-        List<ProductDto> addableProducts = page.getAddableProducts();
-        Assert.assertEquals(1, addableProducts.size());
-        Assert.assertEquals(Hooks.productDto, addableProducts.get(0));
     }
 
     // #endregion

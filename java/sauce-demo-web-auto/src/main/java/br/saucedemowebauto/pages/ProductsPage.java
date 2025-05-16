@@ -24,11 +24,7 @@ public class ProductsPage {
 
     private final By removableProductDivs = By.xpath("//*[contains(@data-test, 'remove')]/../../..");
 
-    private final By addableProductDivs = By.xpath("//*[contains(@data-test, 'add-to-cart')]/../../..");
-
     private final By addToCartButton = By.xpath(".//*[contains(@data-test, 'add-to-cart')]");
-
-    private final By removeButton = By.xpath(".//*[contains(@data-test, 'remove')]");
     
     /**
      * Retorna o texto do título da página "Products".
@@ -91,8 +87,11 @@ public class ProductsPage {
      */
     public List<ProductDto> getAddableProducts() {
         List<ProductDto> dtos = new ArrayList<>();
-        List<WebElement> addableProducts = SeWindow.findElements(addableProductDivs);
-        addableProducts.stream().forEach(product -> dtos.add(convertToDto(product)));
+        for (WebElement webElement: SeWindow.findElements(productDivs)) {
+            if (webElement.findElement(addToCartButton).isDisplayed()) {
+                dtos.add(convertToDto(webElement));
+            }
+        }
         return dtos;
     }
 
@@ -123,18 +122,6 @@ public class ProductsPage {
     public void addProductByName(String name) {
         WebElement product = searchProdutByName(name);
         product.findElement(addToCartButton).click();
-        SeWindow.takeScreenshot();
-    }
-
-    /**
-     * Remove um produto ao carrinho de compras a partir de seu nome.
-     * 
-     * @param name nome do produto.
-     */
-    public void removeProductByName(String name) {
-        WebElement product = searchProdutByName(name);
-        SeWindow.wait(1);
-        product.findElement(removeButton).click();
         SeWindow.takeScreenshot();
     }
 
