@@ -14,6 +14,8 @@ public class LoginDto {
         this.password = password;
     }
 
+    //#region getters e setters
+
     public String getUsername() {
         return username;
     }
@@ -29,5 +31,7 @@ public class LoginDto {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    //#endregion getters e setters
 
 }

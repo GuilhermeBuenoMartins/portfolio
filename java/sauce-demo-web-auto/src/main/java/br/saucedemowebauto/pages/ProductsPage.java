@@ -3,196 +3,136 @@ package br.saucedemowebauto.pages;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 
-import br.saucedemowebauto.dto.ProdutoDto;
-import br.saucedemowebauto.dto.enums.MenuLateral;
+import br.saucedemowebauto.dto.ProductDto;
 import br.saucedemowebauto.selenium.SeWindow;
 
 public class ProductsPage {
 
-    private final By productsTitle = By.xpath("//*[@data-test='title']");
+    private final By productsLabel = By.xpath("//*[@class='title']");
 
-    private final By abrirMenuLateralButton = By.xpath("//*[@id='react-burger-menu-btn']");
+    private final By productDivs = By.xpath("//*[@data-test='inventory-item']");
 
-    private final By opcoesMenuLateralLinks = By.xpath("//*[@class='bm-item menu-item']");
+    private final By productNameLabel = By.xpath(".//*[@data-test='inventory-item-name']");
 
-    private final By fecharMenuLateralButton = By.xpath("//*[@id='react-burger-cross-btn']");
+    private final By productDescriptionText = By.xpath(".//*[@data-test='inventory-item-desc']");
 
-    private final By produtoDivs = By.xpath("//*[@class='inventory_item']");
+    private final By productPriceLabel = By.xpath(".//*[@data-test='inventory-item-price']");
 
-    private final By nomeProdutoLabels = By.xpath(".//*[@class='inventory_item_name ']");
+    private final By removableProductDivs = By.xpath("//*[contains(@data-test, 'remove')]/../../..");
 
-    private final By descricaoProdutoLabels = By.xpath(".//*[@class='inventory_item_desc']");
-
-    private final By precoProdutoLabels = By.xpath(".//*[@class='inventory_item_price']");
-
-    private final By addToCartButtons = By.xpath(".//*[@class='btn btn_primary btn_small btn_inventory ']");
-
-    private final By removeButtons = By.xpath(".//*[@class='btn btn_secondary btn_small btn_inventory ']");
-
-    private final By numeroCarrinhoLabel = By.xpath("//*[@class='shopping_cart_badge']");
-
-    public ProductsPage() {
-    }
-
+    private final By addToCartButton = By.xpath(".//*[contains(@data-test, 'add-to-cart')]");
+    
     /**
-     * @return título da página <i>Products</i>
-     */
-    public String getProductsTitle() {
-        return SeWindow.waitToBeDisplayed(productsTitle, 3).getText();
-    }
-
-    /**
-     * Seleciona uma das opções do Menu Lateral da página <i>Products</i>.
+     * Retorna o texto do título da página "Products".
      * 
-     * @param menuLateral opção do Menu Lateral da página <i>Products</i>.
+     * @return texto do título da página.
      */
-    public void selectInMenuLateral(MenuLateral menuLateral) {
-        if (!isMenuLateralOpened()) {
-            SeWindow.findElement(abrirMenuLateralButton).click();
-            SeWindow.takeScreenshot();
-        }
-        List<WebElement> webElements = SeWindow.findElements(opcoesMenuLateralLinks);
-        Optional<WebElement> optional = webElements.stream().filter(
-                webElement -> webElement.getText().equals(menuLateral.getText())).findFirst();
-        optional.get().click();
-        SeWindow.takeScreenshot();
-    }
-
-    private boolean isMenuLateralOpened() {
-        try {
-            WebElement menuLateral = SeWindow.waitToBeDisplayed(fecharMenuLateralButton, 3);
-            if (menuLateral != null) {
-                return menuLateral.isEnabled();
-            }
-        } catch (TimeoutException exception) {
-        }
-        return false;
+    public String getTitle() {
+        return SeWindow.findElement(productsLabel).getText();
     }
 
     /**
-     * @return Retorna uma lista de produtos da página Products.
+     * @return a quantidade de produtos na página "Products".
      */
-    public List<ProdutoDto> getProdutoDtos() {
-        List<ProdutoDto> produtoDtos = new ArrayList<>();
-        List<WebElement> produtos = SeWindow.findElements(produtoDivs);
-        for (int i = 0; i < produtos.size(); i++) {
-            ProdutoDto produtoDto = new ProdutoDto();
-            produtoDto.setNome(produtos.get(i).findElement(nomeProdutoLabels).getText());
-            produtoDto.setDescricao(produtos.get(i).findElement(descricaoProdutoLabels).getText());
-            String price = produtos.get(i).findElement(precoProdutoLabels).getText().replace("$", "");
-            produtoDto.setPreco(Double.parseDouble(price.trim()));
-            produtoDtos.add(produtoDto);
-        }
-        return produtoDtos;
+    public int getQuantityOfProducts() {
+        return SeWindow.findElements(productDivs).size();
     }
 
     /**
-     * Retorna informações do produto da página `Products` a parir do nome do
-     * produto.
+     * Retorna um produto da página "Products" a partir do seu índice no DOM.
      * 
-     * @param nomeProduto nome do produto.
-     * @return informaçẽos do produto.
+     * @param index índice DOM.
+     * @return produto da página.
      */
-    public ProdutoDto getProdutoDto(String nomeProduto) {
-        WebElement produto = filterProdutoBy(nomeProduto);
-        ProdutoDto produtoDto = new ProdutoDto();
-        produtoDto.setNome(produto.findElement(nomeProdutoLabels).getText());
-        produtoDto.setDescricao(produto.findElement(descricaoProdutoLabels).getText());
-        String price = produto.findElement(precoProdutoLabels).getText().replace("$", "");
-        produtoDto.setPreco(Double.parseDouble(price.trim()));
-        return produtoDto;
+    public ProductDto getProductByIndex(int index) {
+        List<WebElement> productList = SeWindow.findElements(productDivs);
+        return convertToDto(productList.get(index));
     }
 
-    private WebElement filterProdutoBy(String nomeProduto) {
-        List<WebElement> produtos = SeWindow.findElements(produtoDivs);
-        for (int i = 0; i < produtos.size(); i++) {
-            String target = produtos.get(i).findElement(nomeProdutoLabels).getText();
-            if (target.trim().toLowerCase().equals(nomeProduto.trim().toLowerCase())) {
-                return produtos.get(i);
+    /**
+     * Retorna um produto da página "Products" a partir do seu nome.
+     * 
+     * @param name nome do produto.
+     * @return produto da página.
+     */
+    public ProductDto getProductByName(String name) {
+        WebElement product = searchProdutByName(name);
+        return convertToDto(product);
+    }
+
+    /**
+     * Retorna a lista de produtos que foram adicionados ao carrinho de compras.
+     * Esses produtos são identificados na página "Products" pelo botão "Remove",
+     * indicando que já estão no carrinho.
+     *
+     * @return lista de produtos atualmente no carrinho.
+     */
+    public List<ProductDto> getRemovableProducts() {
+        List<ProductDto> dtos = new ArrayList<>();
+        List<WebElement> removableProducts = SeWindow.findElements(removableProductDivs);
+        removableProducts.stream().forEach(product -> dtos.add(convertToDto(product)));
+        return dtos;
+    }
+
+    /**
+     * Retorna a lista de produtos que não estão adicionados ao carrinho.
+     * Esses produtos são identificados na página "Products" pelo botão
+     * "Add to cart".
+     *
+     * @return lista de produtos disponíveis para adição ao carrinho.
+     */
+    public List<ProductDto> getAddableProducts() {
+        List<ProductDto> dtos = new ArrayList<>();
+        for (WebElement webElement: SeWindow.findElements(productDivs)) {
+            if (webElement.findElement(addToCartButton).isDisplayed()) {
+                dtos.add(convertToDto(webElement));
             }
         }
-        return null;
+        return dtos;
+    }
+
+    private ProductDto convertToDto(WebElement webElement) {
+        ProductDto dto = new ProductDto();
+        dto.setName(webElement.findElement(productNameLabel).getText());
+        dto.setDescription(webElement.findElement(productDescriptionText).getText());
+        dto.setPrice(webElement.findElement(productPriceLabel).getText());
+        return dto;
     }
 
     /**
-     * Clica no botão <i>Add to Cart</id> do produto na página Products.
+     * Acessa um produto da página "Products" a partir de seu nome.
      * 
-     * @param nomeProduto nome do produto.
+     * @param name nome do produto.
      */
-    public void clickOnAddToCart(String nomeProduto) {
-        WebElement produto = filterProdutoBy(nomeProduto);
-        produto.findElement(addToCartButtons).click();
+    public void accessProductByName(String name) {
+        WebElement product = searchProdutByName(name);
+        product.findElement(productNameLabel).click();
         SeWindow.takeScreenshot();
     }
 
     /**
-     * Clica no botão <i>Remove</id> do produto na página Products.
+     * Adiciona um produto ao carrinho de compras a partir de seu nome.
      * 
-     * @param nomeProduto nome do produto.
+     * @param name nome do produto.
      */
-    public void clickOnRemove(String nomeProduto) {
-        WebElement produto = filterProdutoBy(nomeProduto);
-        produto.findElement(removeButtons).click();
+    public void addProductByName(String name) {
+        WebElement product = searchProdutByName(name);
+        product.findElement(addToCartButton).click();
         SeWindow.takeScreenshot();
     }
 
-    /**
-     * Acessa detalhes do produto na página Products.
-     * 
-     * @param nomeProduto nome do produto.
-     */
-    public void accessTo(String nomeProduto) {
-        WebElement produto = filterProdutoBy(nomeProduto);
-        produto.findElement(nomeProdutoLabels).click();
-        SeWindow.takeScreenshot();
-    }
-
-    /**
-     * @return retorna o número de produtos no carrinho de compras.
-     */
-    public String getNumeroCarrinhoLabel() {
-        return SeWindow.findElement(numeroCarrinhoLabel).getText();
-    }
-
-    /**
-     * Retorna se o produto está adicionado no carrinho de compras.
-     * 
-     * @param nomeProduto web elemento do produto.
-     * @return <code>true</code> se o produto está removido,
-     *         caso contrário, <code>false</code>.
-     */
-    public boolean produtoAdicionado(String nomeProduto) {
-        WebElement produto = filterProdutoBy(nomeProduto);
-        try {
-            produto.findElement(removeButtons);
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Retorna se o produto está removido do carrinho de compras.
-     * 
-     * @param nomeProduto nome do produto.
-     * @return <code>true</code> se o produto está removido,
-     *         caso contrário, <code>false</code>.
-     */
-    public boolean produtoRemovido(String nomeProduto) {
-        WebElement produto = filterProdutoBy(nomeProduto);
-        try {
-            produto.findElement(addToCartButtons);
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
+    private WebElement searchProdutByName(String name) {
+        List<WebElement> productList = SeWindow.findElements(productDivs);
+        Optional<WebElement> optional = productList.stream()
+            .filter(p -> p.findElement(productNameLabel).getText().equals(name))
+            .findFirst();
+        if (optional.isPresent()) { return optional.get(); }
+        String message = "The product \"" + name + "\" could not be found.";
+        throw new IllegalArgumentException(message);
     }
 
 }

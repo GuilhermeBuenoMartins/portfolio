@@ -1,126 +1,98 @@
 package br.saucedemowebauto.steps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import br.saucedemowebauto.dto.ProdutoDto;
-import br.saucedemowebauto.dto.enums.MenuLateral;
+import org.junit.Assert;
+
+import br.saucedemowebauto.dto.ProductDto;
 import br.saucedemowebauto.pages.ProductsPage;
-import br.saucedemowebauto.selenium.SeConfig;
-import br.saucedemowebauto.selenium.SeWindow;
+import br.saucedemowebauto.pages.TopMenu;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.messages.types.Hook;
 
 public class ProductsSteps {
 
-    private ProductsPage productsPage = new ProductsPage();
+    private final ProductsPage page = new ProductsPage();
 
-    private ProdutoDto produtoDto;
-
-    @Given("usuario adiciona produto {string} ao carrinho de compras na pagina `Products`")
-    public void usuarioAdicionaProdutoAoCarrinhoDeComprasNaPaginaProducts(String nomeProduto) {
-        List<ProdutoDto> produtos  = productsPage.getProdutoDtos();
-        if (nomeProduto.equals("")) {
-            int randomIndex = new Random().nextInt(produtos.size());
-            produtoDto = produtos.get(randomIndex);
-            nomeProduto = produtoDto.getNome();
+    @Given("usuario escolhe produto {string} na pagina Products")
+    public void usuarioEscolheProdutoNaPaginaProducts(String name) {
+        if (name.isEmpty()) {
+            int index = new Random().nextInt(page.getQuantityOfProducts());
+            Hooks.productDto = page.getProductByIndex(index);
         } else {
-            produtoDto = productsPage.getProdutoDto(nomeProduto);
-        }
-        productsPage.clickOnAddToCart(nomeProduto);
-    }
-
-    @Given("usuario adiciona produtos ao carrinho de compras na pagina `Products`")
-    public void usuarioAdicionaProdutosAoCarrinhoDeComprasNaPaginaProducts(DataTable nomeProdutosTable) {
-        List<String> nomeProdutos = nomeProdutosTable.asList();
-        for (String nomeProduto: nomeProdutos) {
-            productsPage.clickOnAddToCart(nomeProduto);
+            Hooks.productDto = page.getProductByName(name);
         }
     }
 
-    @When("usuario acessa a opcao {string} na pagina Products")
-    public void usuarioAcessaAOpcaoNaPaginaProducts(String opcao) {
-        MenuLateral menuLateral = MenuLateral.getMenuLateral(opcao);
-        productsPage.selectInMenuLateral(menuLateral);
+    @Given("usuario escolhe produtos na pagina Products")
+    public void usuarioEscolheProdutosNaPaginaProducts(DataTable productNames) {
+        Hooks.productDtos = new HashSet<>();
+        productNames.asList().stream().forEach(name -> {
+            ProductDto dto = new ProductDto();
+            dto.setName(name);
+            Hooks.productDtos.add(dto);
+        });
+        Hooks.productDtos.stream().forEach(dto -> {
+            ProductDto product = page.getProductByName(dto.getName());
+            dto.setDescription(product.getDescription());
+            dto.setPrice(product.getPrice());
+        });
     }
 
-    @When("usuario adicionar produto {string} ao carrinho de compras na pagina `Products`")
-    public void usuarioAdicionarProdutoAoCarrinhoDeComprasNaPaginaProducts(String nomeProduto) {
-        List<ProdutoDto> produtos  = productsPage.getProdutoDtos();
-        if (nomeProduto.equals("")) {
-            int randomIndex = new Random().nextInt(produtos.size());
-            nomeProduto = produtos.get(randomIndex).getNome();
-        }
-        produtoDto = productsPage.getProdutoDto(nomeProduto);
-        productsPage.clickOnAddToCart(nomeProduto);
+    // #region When steps
+
+    @When("usuario acessa o produto escolhido na pagina Products")
+    public void usuarioAcessaOProdutoEscolhidoNaPaginaProducts() {
+        page.accessProductByName(Hooks.productDto.getName());
     }
 
-    @When("usuario adicionar produtos ao carrinho de compras na pagina `Products`")
-    public void usuarioAdicionarProdutosAoCarrinhoDeComprasNaPaginaProducts(DataTable nomeProdutosTable) {
-        List<String> nomeProdutos = nomeProdutosTable.asList();
-        for (String nomeProduto: nomeProdutos) {
-            productsPage.clickOnAddToCart(nomeProduto);
-        }
+    @When("usuario adicionar produto na pagina Products ao carrinho")
+    public void usuarioAdicionarProdutoNaPaginaProductsAoCarrinho() {
+        page.addProductByName(Hooks.productDto.getName());
     }
 
-    @When("usuario remove produto do carrinho de compras na pagina `Products`")
-    public void usuarioRemoveProdutoDoCarrinhoDeComprasNaPáginaProducts() {
-        productsPage.clickOnRemove(produtoDto.getNome());
+    @When("usuario adicionar produto escolhido")
+    public void usuarioAdicionarProdutoEscolhido() {
+        page.addProductByName(Hooks.productDto.getName());
     }
 
-    @When("usuario remove produtos do carrinho de compras na pagina `Products`")
-    public void usuarioRemoveProdutosDoCarrinhoDeComprasNaPáginaProducts(DataTable nomeProdutosTable) {
-        List<String> nomeProdutos = nomeProdutosTable.asList();
-        for (String nomeProduto: nomeProdutos) {
-            productsPage.clickOnRemove(nomeProduto);
-        }
+    @When("usuario adicionar produtos na pagina Products ao carrinho")
+    public void usuarioAdicionarProdutosNaPaginaProductsAoCarrinho() {
+        Hooks.productDtos.stream().forEach(product -> page.addProductByName(product.getName()));
     }
+
+    // #endregion
+    // #region Then stpes
 
     @Then("usuario e direcionado a pagina Products")
     public void usuarioEDirecionadoAPaginaProducts() {
-        final String titlePageExpected = "Products";
-        final String urlPageExpected = "https://www.saucedemo.com/inventory.html";
-        SeWindow.takeScreenshot();
-        assertEquals(titlePageExpected, productsPage.getProductsTitle());
-        assertEquals(urlPageExpected, SeConfig.getSeConfig().getWebDriver().getCurrentUrl());
+        Assert.assertEquals("Products", page.getTitle());
     }
 
-    @Then("usuario e direcionado a pagina SauceLabs")
-    public void usuarioEDirecionadoAPaginaSauceLabs() {
-        final String urlPageExpected = "https://saucelabs.com/";
-        SeWindow.takeScreenshot();
-        assertEquals(urlPageExpected, SeConfig.getSeConfig().getWebDriver().getCurrentUrl());
+    @Then("os detalhes do produto persistem ao serem apresentados individualmente")
+    public void osDetalhesDoProdutoPersistemAoSeremApresentadosIndividualmente() {
+        int quantityOfProducts = page.getQuantityOfProducts();
+        Assert.assertEquals(1, quantityOfProducts);
+        Assert.assertEquals(Hooks.productDto, page.getProductByIndex(0));
     }
 
-    @Then("o produto e adicionado ao carrinho de compras que apresenta {int} produto")
-    public void oProdutoEAdicionadoAoCarrinhoDeComprasQueApresentaProduto(Integer qtdProdutoEsperado) {
-        String nomeProduto = produtoDto.getNome();
-        Integer qtdProdutoAtual = Integer.parseInt(productsPage.getNumeroCarrinhoLabel());
-        assertTrue(productsPage.produtoAdicionado(nomeProduto));
-        assertEquals(qtdProdutoEsperado, qtdProdutoAtual);
+    @Then("o botao Remove substitui o botao Add to Cart")
+    public void oBotaoRemoveSubstituiOBotaoAddToCart() {
+        List<ProductDto> removableProducts = page.getRemovableProducts();
+        Assert.assertEquals(1, removableProducts.size());
+        Assert.assertEquals(Hooks.productDto, removableProducts.get(0));
     }
 
-    @Then("os produtos sao adicionados ao carrinho de compras que apresenta {int} produto")
-    public void osProdutosSaoAdicionadosAoCarrinhoDeComprasQueApresentaProduto(Integer qtdProdutoEsperado) {
-        Integer qtdProdutoAtual = Integer.parseInt(productsPage.getNumeroCarrinhoLabel());
-        assertEquals(qtdProdutoEsperado, qtdProdutoAtual);
+    @Then("o icone de carrinho apresenta a quantidade produtos adicionados")
+    public void oIconeDeCarrinhoApresentaAQuantidadeProdutosAdicionados() {
+        Assert.assertEquals(Hooks.productDtos.size(), Integer.parseInt(new TopMenu().getCartItemCountLabel()));
     }
 
-    @Then("o produto e removido do carrinho de compras")
-    public void oProdutoERemovidoDoCarrinhoDeCompras() {
-        String nomeProduto = produtoDto.getNome();
-        assertTrue(productsPage.produtoRemovido(nomeProduto));
-    }
-
-    @Then("os produtos sao removidos do carrinho de compras que apresenta {int} produto")
-    public void osProdutosSaoRemovidosDoCarrinhoDeComprasQueApresentaProduto(Integer qtdProdutoEsperado) {
-        Integer qtdProdutoAtual = Integer.parseInt(productsPage.getNumeroCarrinhoLabel());
-        assertEquals(qtdProdutoEsperado, qtdProdutoAtual);
-    }
+    // #endregion
 
 }
