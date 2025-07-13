@@ -1,13 +1,13 @@
-# Projeto sauce-demo-web-auto
+# sauce-demo-web-auto Project
 
-Automação de testes do site [sauce demo](https://www.saucedemo.com/) focado nas funcionalidades:
+Automated testing of the [sauce demo](https://www.saucedemo.com/) website, focusing on the following features:
 
- - **_login_**;
- - **acessar produto**;
- - **adicionar produto ao carrinho**; e 
- - **remover produtos do carrinho**.
- 
- Os arquivos _Gherkin_ correspondentes estão localizados em `./src/test/resources/` e utiliza as tecnologias:
+ - **Login**
+ - **Access product**
+ - **Add product to the cart**
+ - **Remove products from cart**
+
+The corresponding _Gherkin_ files are located in `./src/test/resources` and the project relies on the following technologies:
 
  - Java 11
  - Maven 3.9.5
@@ -16,39 +16,37 @@ Automação de testes do site [sauce demo](https://www.saucedemo.com/) focado na
  - JUnit
  - Docker / Selenium Grid
 
-## Pré-requisitos
+ ## Prerequisites
 
-Os requisitos mínimos para a execução dos testes automatizados estão listados abaixo. É possível baixa-los a partir de seus respectivos _links_:
+ The minimum requirements to run automated testing are listed below. You can download them from their respective links.
 
- + [Git](https://git-scm.com/downloads) versão 2.39.5;
- + [Java](https://www.oracle.com/br/java/technologies/javase/jdk11-archive-downloads.html) versão 11;
- + [Maven](https://maven.apache.org/download.cgi) versão 3.9.5; e
- + [Docker CLI/Engine](https://www.docker.com/get-started/) versão 28.1.1.
+ + [Git](https://git-scm.com/downloads), versão 2.39.5
+ + [Java](https://www.oracle.com/br/java/technologies/javase/jdk11-archive-downloads.html), versão 11
+ + [Maven](https://maven.apache.org/download.cgi), versão 3.9.5
+ + [Docker CLI/Engine](https://www.docker.com/get-started/), versão 28.1.1
 
-## Execução
+ # Execution
 
-Atendidos os pré-requisitos, a execução deverá ser feita a partir do diretório onde este README.md se encontra. Para iniciar o ambiente de execução use os comandos do _docker_ abaixo:
+ Once the prerequirements are met, the commands must be run from the same directory as this README.md file. To start the execution environment, use the following Docker command:
 
 `docker compose -f docker-compose.yml up selenium-hub chrome`
 
-Após a inicialização do ambiente, execute os testes com o seguinte Maven:
+After the environment has been started, run the tests with the following Maven command:
 
 `mvn clean test`
 
-Para execução _multi-thread_ dos cenários de testes, utilize o comando Maven abaixo:
+To perform a multi-thread execution of test scenarios, use the Maven command bellow:
 
 `mvn -T 4 clean test`
 
-Onde 4 é o número de _threads_ usada na execução.
+Where `4` is a number of threads used during execution.
 
-Caso deseje executar apenas uma funcionalidade (_feature_) ou cenário de teste, utilize as _tags_ como no exemplo abaixo:
+If you want to run only a specific feature or test scenario, use tags as shown in the example below:
 
 `mvn clean test -Dcucumber.filter.tags="@login"`
 
-O resultado de todas as execuções pode ser acessado no caminho `./target/cucumber/report.html`.
+The result of all test runs can be accessed at `./target/cucumber/report.html`.
 
-## Desenvolvedores
+## Developers
 
-Os interessados em ampliar a quantidade de testes ou estudar este projeto, por favor, efetuar o _fork_ do projeto e utilizar o arquivo `docker-compose.yml` com o container `debian-env` para desenvolvimento em ambiente padronizado.
-
-
+If you're interested in expanding test coverage or studying this project, please fork it and use the `doker-compose.yml` file with the `debian-env` container to develop in stardardized environment.
