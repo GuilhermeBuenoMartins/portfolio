@@ -10,7 +10,13 @@ Below is a brief description and links to each project in this portfolio. For mo
     <summary>Java</summary>
     <ul>
         <li><a href="./java/sauce-demo-web-auto/README.md"> sauce-demo-web-auto</a>: 
-        Web automation build using Selenium Cucumber and JUnit </li>
+        Web automation build using Selenium Cucumber and JUnit. </li>
+    </ul>
+    <summary>C++</summary>
+    <ul>
+        <li><a href="./cpp/scriptiva/README.md">
+        scriptiva</a>:
+        A terminal-based program developed in C++ to speed up writing tasks. </li>
     </ul>
 </details>
 

@@ -11,6 +11,12 @@ Abaixo estão uma breve descrição e _links_ para os projetos deste portfólio.
     <ul>
         <li><a href="./java/sauce-demo-web-auto/README_PT-BR.md"> sauce-demo-web-auto</a>: automação Web feita com Selenium, Cucumber e JUnit.  </li>
     </ul>
+    <summary>C++</summary>
+        <ul>
+            <li><a href="./cpp/scriptiva/README_PT-BR.md">
+            scriptiva</a>:
+            Um programa de terminal desenvolvido em C++ para agilizar tarefas de escrita. </li>
+        </ul>
 </details>
 
 ## Autor
