@@ -8,7 +8,10 @@ using namespace std;
 // Scriptiva Model
 namespace scpvaM
 {
-    std::string readFile(std::string filename);
+    inline const string brl = "\n\r";
+
+    string readFile(string filename);
+    vector<string> split(const string s, const string p);
 
 #pragma region Classes
 
@@ -16,11 +19,16 @@ namespace scpvaM
     {
     private:
         vector<vector<string>> cells;
-        static vector<vector<string>> build(string content);
 
     public:
-        Table(string content);
+        Table();
+        Table(vector<vector<string>> c);
         ~Table();
+        static Table create(string content, string p);
+        string get(int i, int j) const;
+        string get(string header, int i) const;
+        int getHeader(string header) const;
+        string getHeader(int i) const;
     };
 #pragma endregion
 
@@ -69,20 +77,52 @@ namespace scpvaM
     }
 
 #pragma region Implementations: Table
-    Table::Table(std::string filename)
-    {
-    }
 
-    Table::~Table()
-    {
-    }
+    /// @brief Default constructor.
+    Table::Table() {}
 
-    inline vector<vector<string>> Table::build(string content)
+    /// @brief Alternative constructor.
+    /// @param cells_ Cells.
+    Table::Table(vector<vector<string>> cls) : cells(cls) {}
+
+    Table::~Table() {}
+
+    /// @brief Create an instance of Table.
+    /// @param content String content of the CSV file.
+    /// @param sep String that separates columns.
+    /// @return An instance of Table.
+    inline Table Table::create(string content, string sep)
     {
         vector<vector<string>> cells;
-        // TODO: Implement the function code.
-        return cells;
+        vector<string> lines = split(content, brl);
+        for (int i = 0; i < lines.size(); i++)
+        {
+            cells.push_back(split(lines[i], sep));
+        }
+        return Table(cells);
     }
+
+    inline string Table::get(int i, int j) const {
+        return cells[i][j];
+    }
+
+    inline string Table::getHeader(int i) const {
+        return get(0, i);
+    }
+
+    inline int Table::getHeader(string header) const {
+        for (int j = 0; j < cells[0].size(); j++)
+        {
+            if (cells[0][j] == header) { return j; }
+        }
+        return -1;
+    }
+
+    inline string Table::get(string header, int i) const {
+        int j = getHeader(header);
+        return get(i, j);
+    }
+
 #pragma endregion Implmentations : Table
 #pragma endregion Implementaions
 
