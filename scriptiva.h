@@ -113,15 +113,13 @@ namespace scpvaM
     {
     private:
         string id;
-        Question question;
+        Question &question;
         string answer_id;
         string next_flow;
         string conclusion_id;
         bool is_first;
 
     public:
-        Flow() {}
-
         /// @brief Representation of a flow between a question and next question in other flow.
         /// @param i Identifier (ID).
         /// @param q Question.
@@ -266,7 +264,7 @@ namespace scpvaM
 
     void Flow::setQuestion(Question &q) { question = q; }
 
-    string Flow::getAnswerId() { return; }
+    string Flow::getAnswerId() { return answer_id; }
 
     void Flow::setAnswerId(string aswr_id) { answer_id = aswr_id; }
 
@@ -278,7 +276,7 @@ namespace scpvaM
 
     void Flow::setConclusionId(string concl_i) { conclusion_id = concl_i; }
 
-    bool Flow::isFirst() { return; }
+    bool Flow::isFirst() { return is_first; }
 
     bool Flow::setFirst(bool is_frst) { is_first = is_frst; }
 #pragma endregion Implementations : Flow
@@ -323,7 +321,7 @@ namespace scpvaC
     class Checker
     {
     private:
-        scpvaM::Table table;
+        scpvaM::Table &table;
 
     public:
         /// @brief Constructor of Checher
@@ -469,7 +467,7 @@ namespace scpvaC
             {
                 if (value == table.get(header, r))
                 {
-                    string msg = "The value '" + value = "' in row " + to_string(i);
+                    string msg = "The value '" + value + "' in row " + to_string(i);
                     msg += " is duplicated at row " + to_string(r) + ".";
                     error.addError(msg);
                     break;
@@ -513,6 +511,8 @@ namespace scpvaC
         return flows[0].getQuestion();
     }
 
+    /// @brief Get the next question if the current was answered.
+    /// @return A question.
     scpvaM::Question FlowManager::getNextQuestion() {
         if (getFlow(current_flow).getQuestion().getMatched().size() > 0) {
             current_flow = getFlow(current_flow).getNextFlow();
@@ -540,7 +540,24 @@ namespace scpvaC
     /// @return False if there is not a next question, otherwise false. But it is necessary to check existing errors.
     bool FlowManager::hasNextFlow() { return getFlow(current_flow).getNextFlow().size() > 0; }
 
-    bool FlowManager::answerQuestion(string txt) {}
+    /// @brief Verify if the current question was answered
+    /// @param txt Text of user's answer.
+    /// @return Returns true if the current question was answered, otherwise false.
+    bool FlowManager::answerQuestion(string txt) 
+    {
+        scpvaM::Question *q = &getFlow(current_flow).getQuestion();
+        for (scpvaM::Answer aswr: q->getAnswers())
+        {
+            regex rgx(aswr.getRegex());
+            smatch match;
+            if (regex_search(txt, match, rgx))
+            {
+                q->setMatched(match.str());
+                return true;
+            }
+        }
+        return false;
+    }
 
     Error FlowManager::getError() { return error; }
 #pragma endregion Implementations : FlowManager
