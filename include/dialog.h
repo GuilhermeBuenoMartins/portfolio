@@ -8,6 +8,18 @@
 
 namespace mdl
 {
+    /**
+     * @brief Represents a dialog step in the conversation flow.
+     *
+     * Contains question, response, next dialog id, and conclusion text.
+     *
+     * - id_: Dialog identifier.
+     * - first_: True if this is the first dialog.
+     * - qstn_: Pointer to the associated question.
+     * - resp_: Pointer to the associated response.
+     * - next_: Id of the next dialog.
+     * - conc_: Conclusion text for this dialog.
+     */
     class Dialog
     {
     private:

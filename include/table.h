@@ -6,6 +6,14 @@
 
 namespace utl
 {
+    /**
+     * @brief Represents a table of string data, used for CSV and tabular manipulation.
+     *
+     * Stores the cells and header length. Provides methods to access rows, columns, and individual cells.
+     *
+     * - cells_: 2D vector of table cells.
+     * - hlen_: Horizontal length.
+     */
     class Table
     {
     private:

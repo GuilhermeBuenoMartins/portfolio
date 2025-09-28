@@ -8,6 +8,11 @@
 
 #include <stdexcept>
 
+/**
+ * @brief Utility functions for converting between table rows and model objects.
+ *
+ * Includes conversion for Response, Question, Dialog and search functions by id.
+ */
 namespace utl
 {
     mdl::Response to_response(const std::vector<std::string> &row);

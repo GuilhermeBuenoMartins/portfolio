@@ -5,6 +5,15 @@
 
 namespace mdl
 {
+    /**
+     * @brief Represents a possible response in the conversation flow.
+     *
+     * Stores id, regex pattern, and matched value.
+     *
+     * - id_: Response identifier.
+     * - ptrn_: Regex pattern.
+     * - match_: Value matched by the pattern.
+     */
     class Response
     {
     private:

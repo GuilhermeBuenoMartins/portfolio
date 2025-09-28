@@ -7,6 +7,15 @@
 
 namespace mdl
 {
+    /**
+     * @brief Represents a question in the conversation flow.
+     *
+     * Stores id, text, and answered status.
+     *
+     * - id_: Question identifier.
+     * - text_: Text of the question.
+     * - ansd_: True if answered.
+     */
     class Question
     {
     private:

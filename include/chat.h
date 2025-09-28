@@ -9,6 +9,16 @@
 
 namespace ctr
 {
+    /**
+     * @brief Manages the conversation flow between dialogs.
+     *
+     * Stores the dialogs, history, and current dialog pointer. Provides methods to ask questions,
+     * receive answers, check for conclusion, and retrieve the final message.
+     *
+     * - dlgs_: List of all dialogs in the flow.
+     * - hist_: History of dialogs traversed.
+     * - curr_: Pointer to the current dialog.
+     */
     class Chat
     {
     private:
