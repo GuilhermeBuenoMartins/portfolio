@@ -18,6 +18,38 @@ Properties that have been sold are permanently unavailable for purchase or renta
 
 [3. Features](#3-features)
 
+[3.1 Sign Up](#31-sign-up)
+
+[3.2 Sign In](#32-sign-in)
+
+[3.3 Sign Out](#33-sign-out)
+
+[3.4 Reset Password](#34-reset-password)
+
+[3.5 List Users](#35-list-users)
+
+[3.6 Find User](#36-find-user)
+
+[3.7 Update User Data](#37-update-user-data)
+
+[3.8 Deactivate User](#38-deactivate-user)
+
+[3.9 Add Property for Sale or Rent](#39-add-property-for-sale-or-rent)
+
+[3.10 List Properties](#310-list-properties)
+
+[3.11 Update Property](#311-update-property)
+
+[3.12 Create Visit](#312-create-visit)
+
+[3.13 List Visits](#313-list-visits)
+
+[3.14 Find Visit](#314-find-visit)
+
+[3.15 Update Visit](#315-update-visit)
+
+[3.16 Delete Visit](#316-delete-visit)
+
 ## 1. Setup
 
 This section contents what tools you need to develop or execute this project in your local machine.
@@ -58,64 +90,237 @@ Hence, so that a better understand you should read them sequentially.
 
 ### 3.1 Sign Up
 
-**Status:** Design
+___
+**Status**: Design
+
+**Narrative**: As a user I want to sign up so that using the application.
+
+**Business Rules**:
+<ol>
+ <li> User must sign up without any authentication.
+ <li> Any user who wish sign up must enter: 
+  <ul>
+   <li> Username
+   <li> Password
+   <li> Recovery Password Question
+   <li> Recovery Password Answer
+   <li> Full Name
+   <li> CPF
+   <li> Email
+   <li> List of Phones
+  </ul>
+ <li> The <b>Username</b> field must have:
+  <ul>
+   <li> Minimum of 8 characters
+   <li> None space
+   <li> Maximum of 64 characters
+  </ul>
+ <li> The <b>Password</b> field must have:
+  <ul>
+   <li>Minimum of 8 characters
+   <li>Minimum of 1 upper case character
+   <li>Minimum of 1 lower case character
+   <li>Minimum of 1 special character
+   <li>Minium of 1 digit
+  </ul>
+ <li> The <b>Recovery Password Question</b> field must have:
+  <ul>
+   <li>Minimum of 8 characters
+   <li>Maximum of 256 characters
+  </ul>
+ <li> The <b>Recovery Password Answer</b> field must have:
+  <ul>
+   <li>Minimum of 8 characters
+   <li>Maximum of 32 characters
+  </ul>
+  <li> The <b>Full Name</b> field must have:
+  <ul>
+   <li>Minimum of 8 characters
+   <li>Maximum of 96 characters
+  </ul>
+  <li> The <b>CPF</b> field must have:
+  <ul>
+   <li>Equals to 11 characters
+   <li>None special characters
+   <li>Valid
+  </ul>
+  <li> The <b>Email</b> field must have:
+  <ul>
+   <li>Maximum of 64 characters
+   <li>Valid
+  </ul>
+  <li> The <b>List of Phones</b> field must have:
+  <ul>
+   <li>Minimum of 1 phone
+   <li>Maximum of 2 phone
+   <li>Each phone contains mininum of 10 digits
+   <li>Each phone contains maximum of 11 digits
+  </ul>
+</ol>
+
+**Acceptance Criteria**:
 
 ### 3.2 Sign In
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.3 Sign Out
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.4 Reset Password
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.5 List Users
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.6 Find User
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.7 Update User Data
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.8 Deactivate User
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.9 Add Property for Sale or Rent
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.10 List Properties
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.11 Update Property
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.12 Create Visit
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.13 List Visits
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.14 Find Visit
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.15 Update Visit
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
 
 ### 3.16 Delete Visit
 
-**Status:** Definition
+___
+**Status**: Definition
+
+**Narrative**:
+
+**Business Rules**:
+
+**Acceptance Criteria**:
