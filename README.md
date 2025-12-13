@@ -165,9 +165,17 @@ ___
   <li><b>When</b> I sign up with my data
   <li><b>Then</b> I should receive the message "You were signed up successfully."
  </ul>
- <li><b>Scenario:</b> Try to sign up using an existing CPF/Username
+ <li><b>Scenario:</b> Try to sign up using an existing Username
  <ul>
-  <li><b>Given</b> I have an existing CPF/Username in the system  <li><b>When</b> I try to sign up with an existing CPF/Username  <li><b>Then</b> I should receive the message "CPF/Username was already  registered."
+  <li><b>Given</b> I have an existing Username in the system
+  <li><b>When</b> I try to sign up with an existing Username
+  <li><b>Then</b> I should receive the message "Username was already  registered."
+ </ul>
+ <li><b>Scenario:</b> Try to sign up using an existing CPF
+ <ul>
+  <li><b>Given</b> I have an existing CPF in the system
+  <li><b>When</b> I try to sign up with an existing CPF
+  <li><b>Then</b> I should receive the message "CPF was already  registered."
  </ul>
  <li><b>Scenario:</b> Try to sign up using an invalid Username
  <ul>
@@ -204,11 +212,14 @@ ___
  </ul>
  <li><b>Scenario:</b> Try to sign up using an invalid Email
   <ul>
+  <li><b>Given</b> I have an invalid value in the field Email
     <li><b>When</b> I try to sign up with an invalid Email
   <li><b>Then</b> I should receive the message "The field must have a maximum of 64 characters."
  </ul>
  <li><b>Scenario:</b> Try to sign up using an invalid List of Phones
  <ul>
+    <li><b>Given</b> I have an invalid value in the field Phones
+    <li><b>When</b> I try to sign up with an invalid Phones
     <li><b>Then</b> I should receive the message "The field must have: minimum of 1 phone number; maximum of 2 phone numbers; each phone must contain a minimum of 10 digits; each phone must contain a maximum of 11 digits."
  </ul>
 </ol>
