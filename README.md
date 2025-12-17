@@ -91,7 +91,7 @@ Hence, so that a better understand you should read them sequentially.
 ### 3.1 Sign Up
 
 ___
-**Status**: Design
+**Status**: Implementation
 
 **Narrative**: As a user I want to sign up so that I can use the application.
 
@@ -227,13 +227,38 @@ ___
 ### 3.2 Sign In
 
 ___
-**Status**: Definition
+**Status**: Design
 
-**Narrative**:
+**Narrative**: As a user I want to sign in so that I can use the application's features.
 
 **Business Rules**:
+<ol>
+ <li> A user must enter a username and password;
+ <li> When username or password is incorrect, the application should display the message "Username or password are incorrect."
+ <li> When username and password are correct, the application should return a token.
+</ol>
 
-**Acceptance Criteria**:
+**Acceptance Criteria**: 
+<ol>
+ <li><b>Scenario:</b> Sign in with correct username and password
+  <ul>
+   <li><b>Given</b> I have a correct username and password
+   <li><b>When</b> I sign in to the system
+   <li><b>Then</b> I should receive a token
+  </ul>
+ <li><b>Scenario:</b> Try to sign in with incorrect username
+  <ul>
+   <li><b>Given</b> I have incorrect username
+   <li><b>When</b> I try to sign in
+   <li><b>Then</b> I should receive the message "Username or password are incorrect"
+  </ul>
+ <li><b>Scenario:</b> Try to sign in with incorrect password
+  <ul>
+   <li><b>Given</b> I have an incorrect password
+   <li><b>When</b> I try to sign in
+   <li><b>Then</b> I should receive the message "Username or password are incorrect"
+  </ul>
+</ol>
 
 ### 3.3 Sign Out
 
