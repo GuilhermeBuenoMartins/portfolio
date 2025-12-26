@@ -4,11 +4,11 @@ import java.time.Instant;
 
 import org.example.visitme.control.dto.UserDto;
 import org.example.visitme.control.services.UserService;
-import org.example.visitme.control.services.ValidationService;
 import org.example.visitme.utils.ConverterUtil;
 import org.example.visitme.view.requests.UserRequest;
 import org.example.visitme.view.responses.Response;
 import org.example.visitme.view.responses.UserResponse;
+import org.example.visitme.view.validations.RequestValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -28,12 +28,12 @@ public class UserController {
     private UserService service; 
 
     @Autowired
-    private ValidationService validation;
+    private RequestValidation requestValidation;
 
     @PostMapping("/sign-up")
     public ResponseEntity<Response<UserResponse>> signUp(@RequestBody UserRequest request) {
         final String MESSAGE = "You were signed up successfully.";
-        validation.signUp(request);
+        requestValidation.validateSignUp(request);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         request.getLogin().setPassword(encoder.encode((String) request.getLogin().getPassword()));
         UserDto dto = (UserDto) ConverterUtil.from(request, UserDto.class);

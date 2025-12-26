@@ -15,16 +15,6 @@ public class ValidationException extends RuntimeException {
         super();
     }
 
-    public ValidationException(String message) {
-        super(message);
-        errors = Set.of(new ErrorException("Unknown", message));
-    }
-
-    public ValidationException(ErrorException error) {
-        super(error.toString());
-        errors = Set.of(error);
-    }
-
     public ValidationException(Set<ErrorException> errors) {
         super(errors.toString());
         this.errors = errors;

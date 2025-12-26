@@ -24,7 +24,7 @@ public class UserService {
         UserEntity entity = (UserEntity) ConverterUtil.from(dto, UserEntity.class);
         entity.getLogin().setActived(true);
         List<PhoneEntity> phones = entity.getPhones();
-        phones.forEach(phone -> phone.setUser(entity));
+        phones.forEach(phone -> { phone.setId(null); phone.setUser(entity); });
         repository.save(entity);
         return (UserDto) ConverterUtil.from(entity, UserDto.class);
     }
