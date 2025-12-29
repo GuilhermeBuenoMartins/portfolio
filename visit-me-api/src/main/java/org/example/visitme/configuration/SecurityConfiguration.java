@@ -13,6 +13,8 @@ public class SecurityConfiguration {
     
     private final String HEALTH_ENDPOINT = "/v1/health";
 
+    private final String SIGN_IN_ENDPOINT = "/v1/users/sign-in";
+    
     private final String SIGN_UP_ENDPOINT = "/v1/users/sign-up";
 
     // private final String ERROR_ENDPOINT = "/error";
@@ -20,11 +22,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .csrf(csrf -> csrf.ignoringRequestMatchers(H2_CONSOLE_ENDPOINT, SIGN_UP_ENDPOINT))
+            .csrf(csrf -> csrf.ignoringRequestMatchers(H2_CONSOLE_ENDPOINT, SIGN_IN_ENDPOINT, SIGN_UP_ENDPOINT))
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .cors(cors -> cors.disable())
             .authorizeHttpRequests((authorize) -> authorize.requestMatchers(
-                H2_CONSOLE_ENDPOINT, HEALTH_ENDPOINT, SIGN_UP_ENDPOINT).permitAll().anyRequest().authenticated());
+                H2_CONSOLE_ENDPOINT, HEALTH_ENDPOINT, SIGN_IN_ENDPOINT, SIGN_UP_ENDPOINT).permitAll().anyRequest().authenticated());
         return httpSecurity.build();
     }
 }

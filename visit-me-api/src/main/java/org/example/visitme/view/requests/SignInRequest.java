@@ -7,14 +7,9 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class LoginRequest {
-    
-    private Object username;
+public class SignInRequest {
 
-    private Object password;
+    public String username;
 
-    private Object recoveryPasswordQuestion;
-
-    private Object recoveryPasswordAnswer;
-
+    public String password;
 }

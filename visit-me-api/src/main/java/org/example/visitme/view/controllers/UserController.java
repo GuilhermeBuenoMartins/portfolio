@@ -5,6 +5,7 @@ import java.time.Instant;
 import org.example.visitme.control.dto.UserDto;
 import org.example.visitme.control.services.UserService;
 import org.example.visitme.utils.ConverterUtil;
+import org.example.visitme.view.requests.SignInRequest;
 import org.example.visitme.view.requests.UserRequest;
 import org.example.visitme.view.responses.Response;
 import org.example.visitme.view.responses.UserResponse;
@@ -43,4 +44,10 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatusCode.valueOf(201));
     }
     
+    @PostMapping("/sign-in")
+    public ResponseEntity<Response<String>> signIn(@RequestBody SignInRequest request) {
+        final HttpStatus httpStatus = HttpStatus.OK;
+        Response<String> response = new Response<>(Instant.now(), httpStatus, null, null);
+        return new ResponseEntity<>(response, httpStatus);
+    }
 }
