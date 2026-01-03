@@ -227,7 +227,7 @@ ___
 ### 3.2 Sign In
 
 ___
-**Status**: Implementation
+**Status**: Complete
 
 **Narrative**: As a user I want to sign in so that I can use the application's features.
 
