@@ -11,10 +11,6 @@ public class ValidationException extends RuntimeException {
 
     private Set<ErrorException> errors;
 
-    public ValidationException() {
-        super();
-    }
-
     public ValidationException(Set<ErrorException> errors) {
         super(errors.toString());
         this.errors = errors;

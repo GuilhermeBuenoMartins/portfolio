@@ -11,6 +11,7 @@ import org.example.visitme.control.services.LoginService;
 import org.example.visitme.control.services.UserService;
 import org.example.visitme.view.requests.LoginRequest;
 import org.example.visitme.view.requests.PhoneRequest;
+import org.example.visitme.view.requests.SignInRequest;
 import org.example.visitme.view.requests.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +41,10 @@ public class RequestValidation {
     private final String EXISTING_USERNAME_MESSAGE_ERROR = "Username was already registered.";
 
     private final String EXISTING_CPF_MESSAGE_ERROR = "CPF was already registered.";
+
+    private final String EMPTY_USERNAME = "Username cannot be null or empty.";
+
+    private final String EMPTY_PASSWORD = "Password cannot be null or empty.";
 
     private Set<ErrorException> errors = new HashSet<>();
 
@@ -83,6 +88,21 @@ public class RequestValidation {
             if (userService.hasCpf((String) userRequest.getCpf())) { errors.add(new ErrorException("cpf", EXISTING_CPF_MESSAGE_ERROR)); }
         }
         if (errors.size() != 0 ) { throw new ValidationException(errors); }
+    }
+
+    public void validateSignIn(SignInRequest request) {
+        errors.clear();
+        if (request.getUsername() == null) {
+            errors.add(new ErrorException("username", EMPTY_USERNAME));
+        } else if (request.getUsername().isBlank()) {
+            errors.add(new ErrorException("username", EMPTY_USERNAME));
+        }
+        if (request.getPassword() == null) {
+            errors.add(new ErrorException("password", EMPTY_PASSWORD));
+        } else if (request.getPassword().isBlank()) {
+            errors.add(new ErrorException("password", EMPTY_PASSWORD));
+        }
+        if (errors.size() > 0) { throw new ValidationException(errors); }
     }
 
 }

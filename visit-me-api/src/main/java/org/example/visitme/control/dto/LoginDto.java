@@ -21,4 +21,11 @@ public class LoginDto {
 
     private Boolean actived;
 
+    public LoginDto(String username, String password, String recoveryPasswordQuestion, String recoveryPasswordAnswer) {
+        this.username = username;
+        this.password = password;
+        this.recoveryPasswordQuestion = recoveryPasswordQuestion;
+        this.recoveryPasswordAnswer = recoveryPasswordAnswer;
+    }
+
 }

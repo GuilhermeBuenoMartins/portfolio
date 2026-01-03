@@ -2,7 +2,9 @@ package org.example.visitme.view.controllers;
 
 import java.time.Instant;
 
+import org.example.visitme.control.dto.LoginDto;
 import org.example.visitme.control.dto.UserDto;
+import org.example.visitme.control.services.LoginService;
 import org.example.visitme.control.services.UserService;
 import org.example.visitme.utils.ConverterUtil;
 import org.example.visitme.view.requests.SignInRequest;
@@ -29,6 +31,9 @@ public class UserController {
     private UserService service; 
 
     @Autowired
+    private LoginService loginService;
+
+    @Autowired
     private RequestValidation requestValidation;
 
     @PostMapping("/sign-up")
@@ -47,7 +52,10 @@ public class UserController {
     @PostMapping("/sign-in")
     public ResponseEntity<Response<String>> signIn(@RequestBody SignInRequest request) {
         final HttpStatus httpStatus = HttpStatus.OK;
-        Response<String> response = new Response<>(Instant.now(), httpStatus, null, null);
+        requestValidation.validateSignIn(request);
+        LoginDto loginDto = ConverterUtil.from(request, LoginDto.class);
+        String token = loginService.authenticate(loginDto);
+        Response<String> response = new Response<>(Instant.now(), httpStatus, null, token);
         return new ResponseEntity<>(response, httpStatus);
     }
 }

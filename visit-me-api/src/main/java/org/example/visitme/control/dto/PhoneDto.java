@@ -19,5 +19,8 @@ public class PhoneDto {
 
     @JsonIgnore
     private UserDto user;
-    
+
+    public PhoneDto(String phone) {
+        this.phone = phone;
+    }
 }

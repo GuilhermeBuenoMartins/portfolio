@@ -3,6 +3,8 @@ package org.example.visitme.view.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.visitme.control.dto.LoginDto;
+import org.example.visitme.control.dto.PhoneDto;
 import org.example.visitme.control.dto.UserDto;
 import org.example.visitme.control.services.UserService;
 import org.example.visitme.model.repositories.UserRepository;
@@ -47,6 +49,13 @@ public class UserControllerTest {
         final List<PhoneRequest> phoneRequests = List.of(new PhoneRequest(null, "11964530987"), new PhoneRequest(null, "1142789801"));
         final LoginRequest loginRequest = new LoginRequest("other_username", "oth3rP*ssw0rd", "What is other question?", "This is second answer");
         return new UserRequest(loginRequest, "Other fullname", "80976868059", "other_username@domain.com", phoneRequests);
+    }
+
+    public UserDto getAUserDto() {
+        List<PhoneDto> phoneDtos = List.of(new PhoneDto("11964530987"), new PhoneDto( "1142789801"));
+        LoginDto loginDto = new LoginDto("other_username", "oth3rP*ssw0rd", "What is other question?", "This is second answer");
+        UserDto userDto = new UserDto(loginDto, "Other fullname", "80976868059", "other_username@domain.com", phoneDtos);
+        return userDto;
     }
 
     @Test
@@ -140,80 +149,113 @@ public class UserControllerTest {
     @Test
     @DisplayName("Sistem should return a token")
     public void testSignIn() throws Exception {
-        final UserRequest userRequest = getDefaultUserRequest();
-        final SignInRequest signInRequest = new SignInRequest((String) userRequest.getLogin().getUsername(), (String) userRequest.getLogin().getPassword());
-        final String requestBody = new JsonMapper().writeValueAsString(signInRequest);
-        if (!userService.hasCpf((String) userRequest.getCpf())) {
-            userService.insert(ConverterUtil.from(userRequest, UserDto.class));
-        }
-        final MockHttpServletRequestBuilder RequestBuilder = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(requestBody);
-        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().is(HttpStatus.OK.value());
-        final ResultMatcher timestampMatcher = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
-        final ResultMatcher statusMatcher = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.OK.toString()));
-        mockMvc.perform(RequestBuilder).andExpectAll(statusCodeMatcher, timestampMatcher, statusMatcher).andDo(MockMvcResultHandlers.print());
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        if (!userService.hasCpf((String) USER_REQUEST.getCpf())) { userService.insert(ConverterUtil.from(USER_REQUEST, UserDto.class)); }
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest((String) USER_REQUEST.getLogin().getUsername(), (String) USER_REQUEST.getLogin().getPassword());
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.OK.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.OK.toString()));
+        final ResultMatcher DATA_MATCHER = MockMvcResultMatchers.jsonPath("$.data", Matchers.hasLength(194));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, DATA_MATCHER).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @DisplayName("Username should not be incorrect")
     public void testSignInWithIncorrectUsername() throws Exception {
-        final UserRequest userRequest = getDefaultUserRequest();
-        final SignInRequest signInRequest = new SignInRequest("incorrectUsername", (String) userRequest.getLogin().getPassword());
-        final String requestBody = new JsonMapper().writeValueAsString(signInRequest);
-        if (!userService.hasCpf((String) userRequest.getCpf())) {
-            userService.insert(ConverterUtil.from(userRequest, UserDto.class));
-        }
-        final MockHttpServletRequestBuilder RequestBuilder = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(requestBody);
-        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().is(HttpStatus.OK.value());
-        final ResultMatcher timestampMatcher = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
-        final ResultMatcher statusMatcher = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.OK.toString()));
-        mockMvc.perform(RequestBuilder).andExpectAll(statusCodeMatcher, timestampMatcher, statusMatcher).andDo(MockMvcResultHandlers.print());
+        final String MESSAGE_ERROR = "Username or password are incorrect";
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        if (!userService.hasCpf((String) USER_REQUEST.getCpf())) { userService.insert(ConverterUtil.from(USER_REQUEST, UserDto.class)); }
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest("incorrectUsername", (String) USER_REQUEST.getLogin().getPassword());
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.UNAUTHORIZED.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.UNAUTHORIZED.toString()));
+        final ResultMatcher CAUSE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].cause", Matchers.is("signIn"));
+        final ResultMatcher MESSAGE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].message", Matchers.is(MESSAGE_ERROR));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, CAUSE_MATCHER, MESSAGE_MATCHER).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @DisplayName("Password should not be incorrect")
     public void testSignInWithIncorrectPassword() throws Exception {
-        final UserRequest userRequest = getDefaultUserRequest();
-        final SignInRequest signInRequest = new SignInRequest((String) userRequest.getLogin().getUsername(), "inc0rrectP@ssword");
-        final String requestBody = new JsonMapper().writeValueAsString(signInRequest);
-        if (!userService.hasCpf((String) userRequest.getCpf())) {
-            userService.insert(ConverterUtil.from(userRequest, UserDto.class));
-        }
-        final MockHttpServletRequestBuilder RequestBuilder = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(requestBody);
-        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().is(HttpStatus.OK.value());
-        final ResultMatcher timestampMatcher = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
-        final ResultMatcher statusMatcher = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.OK.toString()));
-        mockMvc.perform(RequestBuilder).andExpectAll(statusCodeMatcher, timestampMatcher, statusMatcher).andDo(MockMvcResultHandlers.print());
+        final String MESSAGE_ERROR = "Username or password are incorrect";
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        if (!userService.hasCpf((String) USER_REQUEST.getCpf())) { userService.insert(ConverterUtil.from(USER_REQUEST, UserDto.class)); }
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest((String) USER_REQUEST.getLogin().getUsername(), "inc0rrectP@ssword");
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.UNAUTHORIZED.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.UNAUTHORIZED.toString()));
+        final ResultMatcher CAUSE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].cause", Matchers.is("signIn"));
+        final ResultMatcher MESSAGE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].message", Matchers.is(MESSAGE_ERROR));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, CAUSE_MATCHER, MESSAGE_MATCHER).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @DisplayName("Username should not be null")
     public void testSignInWithNullUsername() throws Exception {
-        final UserRequest userRequest = getDefaultUserRequest();
-        final SignInRequest signInRequest = new SignInRequest(null, (String) userRequest.getLogin().getPassword());
-        final String requestBody = new JsonMapper().writeValueAsString(signInRequest);
-        if (!userService.hasCpf((String) userRequest.getCpf())) {
-            userService.insert(ConverterUtil.from(userRequest, UserDto.class));
-        }
-        final MockHttpServletRequestBuilder RequestBuilder = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(requestBody);
-        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().is(HttpStatus.OK.value());
-        final ResultMatcher timestampMatcher = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
-        final ResultMatcher statusMatcher = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.OK.toString()));
-        mockMvc.perform(RequestBuilder).andExpectAll(statusCodeMatcher, timestampMatcher, statusMatcher).andDo(MockMvcResultHandlers.print());
+        final String MESSAGE_ERROR = "Username cannot be null or empty.";
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest(null, (String) USER_REQUEST.getLogin().getPassword());
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.BAD_REQUEST.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.BAD_REQUEST.toString()));
+        final ResultMatcher CAUSE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].cause", Matchers.is("username"));
+        final ResultMatcher MESSAGE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].message", Matchers.is(MESSAGE_ERROR));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, CAUSE_MATCHER, MESSAGE_MATCHER).andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("Username should not be blank")
+    public void testSignInWithBlankUsername() throws Exception {
+        final String MESSAGE_ERROR = "Username cannot be null or empty.";
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest("     ", (String) USER_REQUEST.getLogin().getPassword());
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.BAD_REQUEST.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.BAD_REQUEST.toString()));
+        final ResultMatcher CAUSE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].cause", Matchers.is("username"));
+        final ResultMatcher MESSAGE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].message", Matchers.is(MESSAGE_ERROR));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, CAUSE_MATCHER, MESSAGE_MATCHER).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @DisplayName("Password should not be null")
     public void testSignInWithNullPassword() throws Exception {
-        final UserRequest userRequest = getDefaultUserRequest();
-        final SignInRequest signInRequest = new SignInRequest((String) userRequest.getLogin().getUsername(), null);
-        final String requestBody = new JsonMapper().writeValueAsString(signInRequest);
-        if (!userService.hasCpf((String) userRequest.getCpf())) {
-            userService.insert(ConverterUtil.from(userRequest, UserDto.class));
-        }
-        final MockHttpServletRequestBuilder RequestBuilder = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(requestBody);
-        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().is(HttpStatus.OK.value());
-        final ResultMatcher timestampMatcher = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
-        final ResultMatcher statusMatcher = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.OK.toString()));
-        mockMvc.perform(RequestBuilder).andExpectAll(statusCodeMatcher, timestampMatcher, statusMatcher).andDo(MockMvcResultHandlers.print());
+        final String MESSAGE_ERROR = "Password cannot be null or empty.";
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest((String) USER_REQUEST.getLogin().getUsername(), null);
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.BAD_REQUEST.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.BAD_REQUEST.toString()));
+        final ResultMatcher CAUSE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].cause", Matchers.is("password"));
+        final ResultMatcher MESSAGE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].message", Matchers.is(MESSAGE_ERROR));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, CAUSE_MATCHER, MESSAGE_MATCHER).andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("Password should not be blank")
+    public void testSignInWithBlankPassword() throws Exception {
+        final String MESSAGE_ERROR = "Password cannot be null or empty.";
+        final UserRequest USER_REQUEST = getDefaultUserRequest();
+        final SignInRequest SIGN_IN_REQUEST = new SignInRequest((String) USER_REQUEST.getLogin().getUsername(), "     ");
+        final String REQUEST_BODY = new JsonMapper().writeValueAsString(SIGN_IN_REQUEST);
+        final MockHttpServletRequestBuilder REQUEST_BUILDER = MockMvcRequestBuilders.post("/v1/users/sign-in").contentType(MediaType.APPLICATION_JSON).content(REQUEST_BODY);
+        final ResultMatcher STATUS_CODE_MATCHER = MockMvcResultMatchers.status().is(HttpStatus.BAD_REQUEST.value());
+        final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
+        final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status", Matchers.is(HttpStatus.BAD_REQUEST.toString()));
+        final ResultMatcher CAUSE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].cause", Matchers.is("password"));
+        final ResultMatcher MESSAGE_MATCHER = MockMvcResultMatchers.jsonPath("$.messages[0].message", Matchers.is(MESSAGE_ERROR));
+        mockMvc.perform(REQUEST_BUILDER).andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, CAUSE_MATCHER, MESSAGE_MATCHER).andDo(MockMvcResultHandlers.print());
     }
 }

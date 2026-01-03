@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SignInRequest {
 
-    public String username;
+    private String username;
 
-    public String password;
+    private String password;
 }
