@@ -64,7 +64,6 @@ If one or more links does not work, you can find the tools search them.
  - [Git version 2.39.5](https://git-scm.com/install/linux)
  - [Java version 17.0.17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
  - [Apache Maven version 3.9.5](https://maven.apache.org/download.cgi)
- - [MySQL 8.0.43](https://dev.mysql.com/downloads/installer/)
 
 Once installed all the tools above, you will be able to execute the project.
 
@@ -279,11 +278,30 @@ ___
 ___
 **Status**: Design
 
-**Narrative**:
+**Narrative**: As a user I want to sign out so that my last tokens won't be used by anyone.
 
 **Business Rules**:
+<ol>
+  <li> The system must validate token before sign out.
+  <li> When user signed out successfuly, the system should display the message "You are signed out from system.".
+  <li> When user tries to sign out with a invalid token, the system should display "Token invalid. You must to sign in."
+</ol>
 
 **Acceptance Criteria**:
+<ol>
+ <li><b>Scenario:</b> User sign out with a valid token
+ <ul>
+  <li><b>Given</b> I have a valid token
+  <li><b>When</b> I sign out from the system
+  <li><b>Then</b> I should receive the message "You are signed out from system."
+ </ul>
+ <li><b>Scenario:</b>
+ <ul>
+  <li><b>Given</b> I have an invalid token
+  <li><b>When</b> I sign out from the system
+  <li><b>Then</b> I should receive the message "Token invalid. You must to sign in."
+ </ul>
+</ol>
 
 ### 3.4 Reset Password
 
