@@ -1,0 +1,27 @@
+# Compiled application
+app
+
+# Build output directory
+output/
+
+# Object files
+*.o
+
+# CSV data files (if you want to ignore generated/test data, uncomment below)
+#*.csv
+
+# Editor/OS files
+*.swp
+*.swo
+*~
+.DS_Store
+
+# VSCode settings
+.vscode/
+
+# Debugger/IDE files
+*.log
+*.bak
+
+# Doxygen output (if generated)
+doc/

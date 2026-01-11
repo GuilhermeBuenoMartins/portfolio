@@ -1,30 +1,21 @@
-# Portfolio of Guilherme Bueno Martins
+# visit-me
 
-This repository is a portfolio that showcases projects to demonstrate my technical skills, organized by programing language.
+This backend project aims to provide a structure through which property owners can publish offers for sale or rent.
+Interested parties can register to search for properties and schedule visits directly with the owners.
+The buying or rental process is managed by the property owner, and prices can be negotiated.
+Once a property is rented, it will be unavailable until the contract expires or the owner updates its status.
+Properties that have been sold are permanently unavailable for purchase or rental.
 
-## Projects
+## Content
 
-Below is a brief description and links to each project in this portfolio. For more details about a specific project, see its README.md file via the link below.
+[1. Setup](#1-setup)
 
-<details>
-    <summary>Java</summary>
-    <ul>
-        <li><a href="./java/sauce-demo-web-auto/README.md"> sauce-demo-web-auto</a>: 
-        Web automation build using Selenium Cucumber and JUnit. </li>
-    </ul>
-    <summary>C++</summary>
-    <ul>
-        <li><a href="./cpp/scriptiva/README.md">
-        scriptiva</a>:
-        A terminal-based program developed in C++ to speed up writing tasks. </li>
-    </ul>
-</details>
+[1.2. Prerequisites](#11-prerequisites)
 
-## Author
+[1.3. How to Execute](#12-how-to-execute)
 
-Guilherme Bueno Martins, Senior QA with solid experience in automated testing for Web, APIs, Mobile, and SAP GUI. He focuses on quality and performance by implementing development best practices. His main interests include algorithm engineering, computational optimization, and operations research, with an emphasis on efficient and scalable solutions.
+[2. Documentation](#2-documentation)
 
-<<<<<<< HEAD
 [3. Features](#3-features)
 
 [3.1 Sign Up](#31-sign-up)
@@ -73,101 +64,13 @@ If one or more links does not work, you can find the tools search them.
  - [Git version 2.39.5](https://git-scm.com/install/linux)
  - [Java version 17.0.17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
  - [Apache Maven version 3.9.5](https://maven.apache.org/download.cgi)
+ - [MySQL 8.0.43](https://dev.mysql.com/downloads/installer/)
 
 Once installed all the tools above, you will be able to execute the project.
 
 ### 1.2 How to execute
 
-Once inside of `visit-me-api` folder, you can launch the project using one of the following two command in a terminal:
-
-```bash
-mvn clean spring-boot:run
-```
-
-The application will start on `http://localhost:8080`.
-
-
-If you wish to execute just the unit testing, use the following command:
-
-```bash
-mvn clean test
-```
-
 ## 2. Documentation
-
-The **Visit-me** API uses an H2 database where the data is stored in memory.
-When you run the application, the application creates all the needed tables for implemented features automatically.
-If you want to see these tables, simply access the database at `http://localhost:8080/v1/h2-console` and use the following information:
-
-+ **JDBC URL:** `jdbc:h2:mem:visitme_db`
-+ **Username:** `admin`
-+ **Password:** `admin`
-
-You can use SQL statements to manipulate data directly.
-However, this is not recommended
-It is always better to use the endpoints of the following sections to perform actions in the tables, avoiding conflicts and inconsistencies in the application.   
-
-### 2.1. Sign up
-
-While the application is running, you can sign up in the system and your data will be stored in the database.
-The **cURL** command below is a request to the application.
-You can use it to test the endpoint or create a new registration. (See more about the business rules [here](#31-sign-up))
-
-```shell
-curl --request POST \
-  --url http://localhost:8080/v1/users/sign-up \
-  --header 'Content-Type: application/json' \
-  --data '{
-	"fullName": "Complete name",
-	"cpf": "09853843013",
-	"email": "a.username@domain.com",
-	"login": {
-		"username": "a.username",
-		"password": "aP*ssw0rd",
-		"recoveryPasswordQuestion": "What is the question?",
-		"recoveryPasswordAnswer": "This is the question"
-	},
-	"phones": [
-		{ "phone": "11964530987" },
-		{ "phone": "1142789801"}
-	]
-}'
-```
-
-You should get a reponse similar to the one below from the application.
-If your response is different from the expected, please read the **user story** [3.1. Sign-up](#31-sign-up) for more information.
-
-```json
-{
-	"timestamp": "2026-01-11T21:23:39.564819605Z",
-	"status": "201 CREATED",
-	"message": "You were signed up successfully.",
-	"data": {
-		"cpf": "09853843013",
-		"email": "a.username@domain.com",
-		"fullName": "Complete name",
-		"id": 1,
-		"login": {
-			"actived": true,
-			"id": 1,
-			"password": "$2a$10$Udur0rQnpKWhptORvXa0D.kEv.vclHoe0FMwP3wRTOdN3.Y/c3ITW",
-			"recoveryPasswordAnswer": "This is the question",
-			"recoveryPasswordQuestion": "What is the question?",
-			"username": "a.username"
-		},
-		"phones": [
-			{
-				"id": 1,
-				"phone": "11964530987"
-			},
-			{
-				"id": 2,
-				"phone": "1142789801"
-			}
-		]
-	}
-}
-```
 
 ## 3. Features
 
@@ -248,7 +151,7 @@ ___
  <ul>
   <li> Minimum of 1 phone number
   <li> Maximum of 2 phone numbers
-  <li> Each phone must contain a minimum of 10 digits
+  <li>  ach phone must contain a minimum of 10 digits
   <li> Each phone must contain a maximum of 11 digits
  </ul>
 </ol>
@@ -376,36 +279,11 @@ ___
 ___
 **Status**: Design
 
-**Narrative**: As a user I want to sign out so that my last tokens won't be used by anyone.
-**Narrative**: As a user I want to sign out so that my last tokens won't be used by anyone.
+**Narrative**:
 
 **Business Rules**:
-<ol>
-  <li> The system must validate token before sign out.
-  <li> When user signed out successfuly, the system should display the message "You are signed out from system.".
-  <li> When user tries to sign out with a invalid token, the system should display "Token invalid. You must to sign in."
-</ol>
-<ol>
-  <li> The system must validate token before sign out.
-  <li> When user signed out successfuly, the system should display the message "You are signed out from system.".
-  <li> When user tries to sign out with a invalid token, the system should display "Token invalid. You must to sign in."
-</ol>
 
 **Acceptance Criteria**:
-<ol>
- <li><b>Scenario:</b> User sign out with a valid token
- <ul>
-  <li><b>Given</b> I have a valid token
-  <li><b>When</b> I sign out from the system
-  <li><b>Then</b> I should receive the message "You are signed out from system."
- </ul>
- <li><b>Scenario:</b>
- <ul>
-  <li><b>Given</b> I have an invalid token
-  <li><b>When</b> I sign out from the system
-  <li><b>Then</b> I should receive the message "Token invalid. You must to sign in."
- </ul>
-</ol>
 
 ### 3.4 Reset Password
 
@@ -549,7 +427,3 @@ ___
 **Business Rules**:
 
 **Acceptance Criteria**:
-=======
-**LinkedIn:** [linkedin.com/in/guilherme-b](https://linkedin.com/in/guilherme-b)  
-**E-mail:** bmartins.guilherme.2022@gmail.com
->>>>>>> b25d9154c786bee484c697c11fe832266887531b

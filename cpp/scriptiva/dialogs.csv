@@ -1,0 +1,8 @@
+ID;First;Question_ID;Response_ID;Next;Conclusion;
+D100;true;Q01;R01;D110;;
+D110;false;Q02;R02;D120;;
+D111;false;Q02;R03;D120;;
+D112;false;Q02;R04;;${R01}, congrats! You're an adult and don't need anyone to handle your legal matters.;
+D113;false;Q02;R05;;Congrats! ${R01}, you're an older adult with much experience and many stories to share.;
+D114;false;Q02;R06;;Haha, nice! You’re joking, ${R01} — human? I don’t think so!;
+D120;false;Q03;R07;;${R01}, unfortunately you're not an adult yet and ${R07} needs to handle legal stuff for you.;

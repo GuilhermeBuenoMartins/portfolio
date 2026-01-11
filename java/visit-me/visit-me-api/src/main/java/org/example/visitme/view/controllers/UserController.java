@@ -1,0 +1,61 @@
+package org.example.visitme.view.controllers;
+
+import java.time.Instant;
+
+import org.example.visitme.control.dto.LoginDto;
+import org.example.visitme.control.dto.UserDto;
+import org.example.visitme.control.services.LoginService;
+import org.example.visitme.control.services.UserService;
+import org.example.visitme.utils.ConverterUtil;
+import org.example.visitme.view.requests.SignInRequest;
+import org.example.visitme.view.requests.UserRequest;
+import org.example.visitme.view.responses.Response;
+import org.example.visitme.view.responses.UserResponse;
+import org.example.visitme.view.validations.RequestValidation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+@Controller
+@RequestMapping("/v1/users")
+public class UserController {
+    
+    @Autowired
+    private UserService service; 
+
+    @Autowired
+    private LoginService loginService;
+
+    @Autowired
+    private RequestValidation requestValidation;
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<Response<UserResponse>> signUp(@RequestBody UserRequest request) {
+        final String MESSAGE = "You were signed up successfully.";
+        requestValidation.validateSignUp(request);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        request.getLogin().setPassword(encoder.encode((String) request.getLogin().getPassword()));
+        UserDto dto = (UserDto) ConverterUtil.from(request, UserDto.class);
+        dto = service.insert(dto);
+        UserResponse userResponse = ConverterUtil.from(dto, UserResponse.class);
+        Response<UserResponse> response = new Response<>(Instant.now(), HttpStatus.CREATED, MESSAGE, userResponse);
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(201));
+    }
+    
+    @PostMapping("/sign-in")
+    public ResponseEntity<Response<String>> signIn(@RequestBody SignInRequest request) {
+        final HttpStatus httpStatus = HttpStatus.OK;
+        requestValidation.validateSignIn(request);
+        LoginDto loginDto = ConverterUtil.from(request, LoginDto.class);
+        String token = loginService.authenticate(loginDto);
+        Response<String> response = new Response<>(Instant.now(), httpStatus, null, token);
+        return new ResponseEntity<>(response, httpStatus);
+    }
+}
