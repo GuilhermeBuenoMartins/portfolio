@@ -69,6 +69,21 @@ Once installed all the tools above, you will be able to execute the project.
 
 ### 1.2 How to execute
 
+Once inside of `visit-me-api` folder, you can launch the project using one of the following two command in a terminal:
+
+```bash
+mvn clean spring-boot:run
+```
+
+The application will start on `http://localhost:8080`.
+
+
+If you wish to execute just the unit testing, use the following command:
+
+```bash
+mvn clean test
+```
+
 ## 2. Documentation
 
 ## 3. Features
