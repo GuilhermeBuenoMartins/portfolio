@@ -86,6 +86,80 @@ mvn clean test
 
 ## 2. Documentation
 
+The **Visit-me** API uses an H2 database where the data is stored in memory.
+When you run the application, the application creates all the needed tables for implemented features automatically.
+If you want to see these tables, simply access the database at `http://localhost:8080/v1/h2-console` and use the following information:
+
++ **JDBC URL:** `jdbc:h2:mem:visitme_db`
++ **Username:** `admin`
++ **Password:** `admin`
+
+You can use SQL statements to manipulate data directly.
+However, this is not recommended
+It is always better to use the endpoints of the following sections to perform actions in the tables, avoiding conflicts and inconsistencies in the application.   
+
+### 2.1. Sign up
+
+While the application is running, you can sign up in the system and your data will be stored in the database.
+The **cURL** command below is a request to the application.
+You can use it to test the endpoint or create a new registration. (See more about the business rules [here](#31-sign-up))
+
+```shell
+curl --request POST \
+  --url http://localhost:8080/v1/users/sign-up \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"fullName": "Complete name",
+	"cpf": "09853843013",
+	"email": "a.username@domain.com",
+	"login": {
+		"username": "a.username",
+		"password": "aP*ssw0rd",
+		"recoveryPasswordQuestion": "What is the question?",
+		"recoveryPasswordAnswer": "This is the question"
+	},
+	"phones": [
+		{ "phone": "11964530987" },
+		{ "phone": "1142789801"}
+	]
+}'
+```
+
+You should get a reponse similar to the one below from the application.
+If your response is different from the expected, please read the **user story** [3.1. Sign-up](#31-sign-up) for more information.
+
+```json
+{
+	"timestamp": "2026-01-11T21:23:39.564819605Z",
+	"status": "201 CREATED",
+	"message": "You were signed up successfully.",
+	"data": {
+		"cpf": "09853843013",
+		"email": "a.username@domain.com",
+		"fullName": "Complete name",
+		"id": 1,
+		"login": {
+			"actived": true,
+			"id": 1,
+			"password": "$2a$10$Udur0rQnpKWhptORvXa0D.kEv.vclHoe0FMwP3wRTOdN3.Y/c3ITW",
+			"recoveryPasswordAnswer": "This is the question",
+			"recoveryPasswordQuestion": "What is the question?",
+			"username": "a.username"
+		},
+		"phones": [
+			{
+				"id": 1,
+				"phone": "11964530987"
+			},
+			{
+				"id": 2,
+				"phone": "1142789801"
+			}
+		]
+	}
+}
+```
+
 ## 3. Features
 
 The project's features were subdivided into **user stories** to detail the expected behaviors throughout its development.
@@ -165,7 +239,7 @@ ___
  <ul>
   <li> Minimum of 1 phone number
   <li> Maximum of 2 phone numbers
-  <li>  ach phone must contain a minimum of 10 digits
+  <li> Each phone must contain a minimum of 10 digits
   <li> Each phone must contain a maximum of 11 digits
  </ul>
 </ol>
