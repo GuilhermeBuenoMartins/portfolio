@@ -1,6 +1,6 @@
 package org.example.visitme.view.requests;
 
-import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,17 +9,17 @@ import lombok.RequiredArgsConstructor;
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class UserRequest {
+public class SignUpRequest {
 
     private LoginRequest login;
 
-    private Object fullName;
+    private String fullName;
 
-    private Object cpf;
+    private String cpf;
 
-    private Object email;
+    private String email;
 
-    private List<PhoneRequest> phones;
+    private Set<PhoneRequest> phones;
 
 
 }

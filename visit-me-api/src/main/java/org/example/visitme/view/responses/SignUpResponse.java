@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class UserResponse implements Serializable {
+public class SignUpResponse implements Serializable {
 
     private Integer id;
 

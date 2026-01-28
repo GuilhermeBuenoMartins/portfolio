@@ -9,12 +9,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LoginRequest {
     
-    private Object username;
+    private String username;
 
-    private Object password;
+    private String password;
 
-    private Object recoveryPasswordQuestion;
+    private String recoveryPasswordQuestion;
 
-    private Object recoveryPasswordAnswer;
+    private String recoveryPasswordAnswer;
 
 }

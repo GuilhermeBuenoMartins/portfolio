@@ -1,8 +1,8 @@
 package org.example.visitme.control.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,9 +25,9 @@ public class UserDto implements Serializable {
 
     private String email;
 
-    private List<PhoneDto> phones = new ArrayList<>();
+    private Set<PhoneDto> phones = new HashSet<>();
 
-    public UserDto(LoginDto login, String fullName, String cpf, String email, List<PhoneDto> phones) {
+    public UserDto(LoginDto login, String fullName, String cpf, String email, Set<PhoneDto> phones) {
         this.login = login;
         this.fullName = fullName;
         this.cpf = cpf;
