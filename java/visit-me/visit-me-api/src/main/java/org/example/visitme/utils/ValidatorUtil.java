@@ -31,10 +31,12 @@ public final class ValidatorUtil {
         if (cpf == null ) { return false; }
         if (cpf.length() != LENGTH) { return false; }
         if (!cpf.matches("\\d{11}")) { return false; }
-        final int[] digits = IntStream.range(0, LENGTH).map(i -> Integer.parseInt(cpf.substring(i, i + 1))).toArray();
-        final int verificator1 = 11 - IntStream.range(0, LENGTH - 2).reduce(0, (r, i) -> digits[i] * (10 - i) + r) % 11;
-        if (verificator1 != digits[9]) { return false; }
-        final int verificator2 = 11 - IntStream.range(0, LENGTH - 1).reduce(0, (r, i) -> digits[i] * (11 - i) + r) % 11;
-        return verificator2 == digits[10];
+        final int[] digit = IntStream.range(0, LENGTH).map(i -> Integer.parseInt(cpf.substring(i, i + 1))).toArray();
+        int calc = 10 * IntStream.range(0, LENGTH - 2).reduce(0, (r, i) -> (10 - i) * digit[i] + r) % 11;
+        int verication = calc == 10? 0: calc;
+        if (digit[9] != verication) { return false; }
+        calc = 10 * IntStream.range(0, LENGTH - 1).reduce(0, (r, i) -> (11 - i) * digit[i] + r) % 11;
+        verication = calc == 10? 0: calc;
+        return digit[10] == verication;
     }
 }

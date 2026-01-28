@@ -17,7 +17,7 @@ public class ValidatorUtilTest {
     @Test
     @DisplayName("CPF should not be invalid")
     void testPasswordWithInvalidDigit() {
-        final String CPF = "09853843003";
+        final String CPF = "09853843014";
         Assertions.assertFalse(ValidatorUtil.validateCPF(CPF));
     }
 

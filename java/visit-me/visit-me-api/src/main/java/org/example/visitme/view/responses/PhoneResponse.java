@@ -18,6 +18,6 @@ public class PhoneResponse {
     private String phone;
 
     @JsonIgnore
-    private UserResponse user;
+    private SignUpResponse user;
     
 }

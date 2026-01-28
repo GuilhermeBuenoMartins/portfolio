@@ -9,7 +9,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PhoneRequest {
 
-    private Object id;
-
-    private Object phone;
+    private String phone;
 }

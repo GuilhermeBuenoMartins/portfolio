@@ -10,7 +10,7 @@ import lombok.ToString;
 @Data
 @ToString
 @RequiredArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "phone")
 public class PhoneDto {
 
     private Integer id;
