@@ -11,8 +11,6 @@ Below are corresponding examples of a request and a response.
 curl --request POST \
   --url http://localhost:8080/v1/home/sign-in \
   --header 'Content-Type: application/json' \
-  --header 'User-Agent: insomnia/11.2.0' \
-  --cookie JSESSIONID=1B4DF5F1DDC6972C1602627780928BFD \
   --data '{
 	"username": "a.username",
 	"password": "aP*ssw0rd"
