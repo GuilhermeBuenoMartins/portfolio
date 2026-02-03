@@ -22,7 +22,7 @@ ___
 
 3. Request to sign out must be as in the following example.
 
-```shel
+```shell
 curl --request POST \
   --url http://localhost:8080/v1/home/sign-out \
   --header 'Content-Type: application/json' \
@@ -56,7 +56,6 @@ curl --request POST \
 }
 ```
 
-
 **Acceptance Criteria**:
 <ol>
  <li><b>Scenario:</b> User sign out with a valid token
@@ -65,7 +64,7 @@ curl --request POST \
   <li><b>When</b> I sign out from the system
   <li><b>Then</b> I should receive the message "You are signed out from system."
  </ul>
- <li><b>Scenario: User sign out with a invalid token</b>
+ <li><b>Scenario: User sign out with an invalid token</b>
  <ul>
   <li><b>Given</b> I have an invalid token
   <li><b>When</b> I sign out from the system
