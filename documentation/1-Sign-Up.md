@@ -24,7 +24,7 @@ curl --request POST \
         { "phone": "11964530987" },
         { "phone": "1142789801"}
     ]
-}''
+}'
 ```
 
 You should get a reponse similar to the one below from the application.

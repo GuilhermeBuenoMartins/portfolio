@@ -47,7 +47,7 @@ public class HomeServiceTest {
         final String FULLNAME = "fullname";
         final String CPF = "04629932801";
         final String EMAIL = "a_user.name@domain.com";
-        return new UserDto(defaultLoginDto(),FULLNAME, CPF, EMAIL, defaultPhoneDtos());
+        return new UserDto(defaultLoginDto(), FULLNAME, CPF, EMAIL, defaultPhoneDtos());
     }
 
     @Test
@@ -69,14 +69,20 @@ public class HomeServiceTest {
     public void testSignUpWithInvalidUserData() {
         final UserDto USER_DTO = new UserDto(new LoginDto(), null, null, null, new HashSet<>());
         final ErrorException[] ERROR_EXCEPTIONS = {
-            new ErrorException("Field \"fullname\".", "The field must have: minimum of 8 characters; maximum of 96 characters."),
-            new ErrorException("Field \"cpf\".", "The field must have: exactly 11 digits; no special characters."),
-            new ErrorException("Field \"password\".", "The field must have: minimum of 8 characters; minimum of 1 uppercase character; minimum of 1 special character; minimum of 1 digit."),
-            new ErrorException("Field \"phone\".", "The field must have: minimum of 1 phone number; maximum of 2 phone numbers; each phone must contain a minimum of 10 digits; each phone must contain a maximum of 11 digits."),
-            new ErrorException("Field \"username\".", "The field must have: minimum of 8 characters; maximum of 64 characters; no spaces."),
-            new ErrorException("Field \"recoveryPasswordQuestion\".", "The field must have: minimum of 8 characters; maximum of 256 characters."),
-            new ErrorException("Field \"recoveryPasswordAnswer\".", "The field must have: minimum of 8 characters; maximum of 32 characters."),
-            new ErrorException("Field \"email\".", "The field must have a maximum of 64 characters."),
+                new ErrorException("Field \"fullname\".",
+                        "The field must have: minimum of 8 characters; maximum of 96 characters."),
+                new ErrorException("Field \"cpf\".", "The field must have: exactly 11 digits; no special characters."),
+                new ErrorException("Field \"password\".",
+                        "The field must have: minimum of 8 characters; minimum of 1 uppercase character; minimum of 1 special character; minimum of 1 digit."),
+                new ErrorException("Field \"phone\".",
+                        "The field must have: minimum of 1 phone number; maximum of 2 phone numbers; each phone must contain a minimum of 10 digits; each phone must contain a maximum of 11 digits."),
+                new ErrorException("Field \"username\".",
+                        "The field must have: minimum of 8 characters; maximum of 64 characters; no spaces."),
+                new ErrorException("Field \"recoveryPasswordQuestion\".",
+                        "The field must have: minimum of 8 characters; maximum of 256 characters."),
+                new ErrorException("Field \"recoveryPasswordAnswer\".",
+                        "The field must have: minimum of 8 characters; maximum of 32 characters."),
+                new ErrorException("Field \"email\".", "The field must have a maximum of 64 characters."),
         };
         try {
             homeService.signUp(USER_DTO);
@@ -140,7 +146,7 @@ public class HomeServiceTest {
     @DisplayName("Invalid login with incorrect username should not authenticated")
     public void testInvalidLoginWithIncorrectUsername() {
         final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Usersanme or password are incorrect.";
+        final String MESSAGE = "Username or password are incorrect.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             homeService.signUp(userDto);
@@ -157,7 +163,7 @@ public class HomeServiceTest {
     @DisplayName("Invalid login with incorrect password should not authenticated")
     public void testInvalidLoginWithIncorrectPassword() {
         final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Usersanme or password are incorrect.";
+        final String MESSAGE = "Username or password are incorrect.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             homeService.signUp(userDto);
@@ -174,7 +180,7 @@ public class HomeServiceTest {
     @DisplayName("Deactivated login should be not authenticated")
     public void testDeactivatedLogin() {
         final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Usersanme or password are incorrect.";
+        final String MESSAGE = "Username or password are incorrect.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             userDto = homeService.signUp(userDto);

@@ -27,16 +27,16 @@ public class HomeService {
 
     @Autowired
     private JwtUtil jwtUtil;
-    
+
     @Autowired
     private SignInValidationService signInValidationService;
 
     @Autowired
-    private SignUpValidationService signUpValidationService; 
+    private SignUpValidationService signUpValidationService;
 
     @Autowired
     private LoginRepository loginRepository;
-    
+
     @Autowired
     private UserRepository userRepository;
 
@@ -46,16 +46,18 @@ public class HomeService {
             throw new ValidationException(ERROR_EXCEPTIONS);
         }
         dto.getLogin().setPassword(encoder.encode(dto.getLogin().getPassword()));
-        dto.getLogin().setRecoveryPasswordAnswer(encoder.encode(dto.getLogin().getRecoveryPasswordAnswer().toLowerCase()));
+        dto.getLogin()
+                .setRecoveryPasswordAnswer(encoder.encode(dto.getLogin().getRecoveryPasswordAnswer().toLowerCase()));
         dto.getLogin().setActived(true);
-        dto.getPhones().forEach(phoneDto -> phoneDto.setUser(dto));
-        UserEntity entity = userRepository.save(ConverterUtil.from(dto, UserEntity.class));
+        UserEntity entity = ConverterUtil.from(dto, UserEntity.class);
+        entity.getPhones().stream().forEach(phoneDto -> phoneDto.setUser(entity));
+        userRepository.save(entity);
         return ConverterUtil.from(entity, UserDto.class);
     }
 
     public String signIn(LoginDto dto) {
         final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Usersanme or password are incorrect.";
+        final String MESSAGE = "Username or password are incorrect.";
         final Set<ErrorException> ERROR_EXCEPTIONS = signInValidationService.validate(dto);
         if (ERROR_EXCEPTIONS.size() > 0) {
             throw new ValidationException(ERROR_EXCEPTIONS);
