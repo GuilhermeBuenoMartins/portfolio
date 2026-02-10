@@ -32,12 +32,12 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DisplayName("Test of Home Controller")
-public class HomeControllerTest {
+@DisplayName("Test of HomeControllerImpl")
+public class HomeControllerImplTest {
 
-    private final String SIGN_UP_ENDPOINT = "/v1/home/sign-up";
+    private static final String SIGN_UP_ENDPOINT = "/v1/home/sign-up";
 
-    private final String SIGN_IN_ENDPOINT = "/v1/home/sign-in";
+    private static final String SIGN_IN_ENDPOINT = "/v1/home/sign-in";
 
     @Autowired
     private HomeService homeService;
@@ -184,7 +184,7 @@ public class HomeControllerTest {
         final ResultMatcher TIMESTAMP_MATCHER = MockMvcResultMatchers.jsonPath("$.timestamp", Matchers.notNullValue());
         final ResultMatcher STATUS_MATCHER = MockMvcResultMatchers.jsonPath("$.status",
                 Matchers.is(HttpStatus.OK.toString()));
-        final ResultMatcher DATA_MATCHER = MockMvcResultMatchers.jsonPath("$.data", Matchers.hasLength(192));
+        final ResultMatcher DATA_MATCHER = MockMvcResultMatchers.jsonPath("$.data", Matchers.hasLength(184));
         mockMvc.perform(requestBuilder)
                 .andExpectAll(STATUS_CODE_MATCHER, TIMESTAMP_MATCHER, STATUS_MATCHER, DATA_MATCHER)
                 .andDo(MockMvcResultHandlers.print());

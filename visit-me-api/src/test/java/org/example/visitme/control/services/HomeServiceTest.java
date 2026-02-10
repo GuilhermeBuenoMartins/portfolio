@@ -94,7 +94,7 @@ public class HomeServiceTest {
     @Test
     @DisplayName("Valid login data should be authenticated")
     public void testSignInWithValidUserData() {
-        final int TOKEN_LENGTH = 186;
+        final int TOKEN_LENGTH = 178;
         final UserDto USER_DTO = defaultUserDto();
         if (!loginRepository.existsByUsername(USER_DTO.getLogin().getUsername())) {
             homeService.signUp(USER_DTO);

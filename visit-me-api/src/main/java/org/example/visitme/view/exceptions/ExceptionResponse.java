@@ -1,5 +1,6 @@
 package org.example.visitme.view.exceptions;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Schema(description = "Standard Exception Response Model")
-public class ExceptionResponse {
+public class ExceptionResponse implements Serializable {
 
     @Schema(description = "Timestamp of when the exception occurred", example = "2024-01-01T12:00:00Z")
     private Instant timestamp;
