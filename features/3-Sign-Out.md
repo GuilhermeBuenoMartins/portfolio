@@ -3,7 +3,7 @@
 ### 3.3 Sign Out
 
 ___
-**Status**: Design
+**Status**: Test
 
 **Narrative**: As a user I want to sign out so that my last tokens won't be used by anyone.
 
