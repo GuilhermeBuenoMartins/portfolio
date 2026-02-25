@@ -1,7 +1,6 @@
 package org.example.visitme.view.controllers;
 
 import java.time.Instant;
-import java.util.Map;
 
 import org.example.visitme.control.services.UserService;
 import org.example.visitme.view.responses.Response;

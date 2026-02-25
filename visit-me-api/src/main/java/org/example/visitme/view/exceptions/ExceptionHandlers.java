@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Set;
 
 import org.example.visitme.control.exceptions.AuthenticationException;
+import org.example.visitme.control.exceptions.NotFoundException;
 import org.example.visitme.control.exceptions.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,13 @@ public class ExceptionHandlers {
     public ResponseEntity<ExceptionResponse> authentication(AuthenticationException e, HttpServletRequest request) {
         final HttpStatus STATUS = HttpStatus.UNAUTHORIZED;
         ExceptionResponse response = new ExceptionResponse(Instant.now(), STATUS, request.getRequestURI(), Set.of(e.getError()));
+        return new ResponseEntity<ExceptionResponse>(response, STATUS);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ExceptionResponse> notFound(NotFoundException e, HttpServletRequest request) {
+        final HttpStatus STATUS = HttpStatus.NOT_FOUND;
+        ExceptionResponse response = new ExceptionResponse(Instant.now(), STATUS, request.getRequestURI(), e.getErrors());
         return new ResponseEntity<ExceptionResponse>(response, STATUS);
     }
 }

@@ -8,6 +8,7 @@ import org.example.visitme.control.dto.PhoneDto;
 import org.example.visitme.control.dto.UserDto;
 import org.example.visitme.control.exceptions.AuthenticationException;
 import org.example.visitme.control.exceptions.ErrorException;
+import org.example.visitme.control.exceptions.NotFoundException;
 import org.example.visitme.control.exceptions.ValidationException;
 import org.example.visitme.model.entities.LoginEntity;
 import org.example.visitme.model.repositories.LoginRepository;
@@ -44,10 +45,10 @@ public class HomeServiceTest {
     }
 
     private UserDto defaultUserDto() {
-        final String FULLNAME = "fullname";
-        final String CPF = "04629932801";
-        final String EMAIL = "a_user.name@domain.com";
-        return new UserDto(defaultLoginDto(), FULLNAME, CPF, EMAIL, defaultPhoneDtos());
+        final String fullName = "fullname";
+        final String cpf = "04629932801";
+        final String email = "a_user.name@domain.com";
+        return new UserDto(defaultLoginDto(), fullName, cpf, email, defaultPhoneDtos());
     }
 
     @Test
@@ -56,19 +57,19 @@ public class HomeServiceTest {
         UserDto userDto = defaultUserDto();
         userDto.getLogin().setUsername("AnotherUsername");
         userDto.setCpf("04629934855");
-        final UserDto USER_DTO = homeService.signUp(userDto);
-        Assertions.assertNotNull(USER_DTO.getId());
-        Assertions.assertNotNull(USER_DTO.getLogin().getId());
-        Assertions.assertTrue(USER_DTO.getLogin().getActived());
-        USER_DTO.getPhones().forEach(phoneDto -> Assertions.assertNotNull(phoneDto.getId()));
-        Assertions.assertTrue(userRepository.findById(USER_DTO.getId()).isPresent());
+        userDto = homeService.signUp(userDto);
+        Assertions.assertNotNull(userDto.getId());
+        Assertions.assertNotNull(userDto.getLogin().getId());
+        Assertions.assertTrue(userDto.getLogin().getActived());
+        userDto.getPhones().forEach(phoneDto -> Assertions.assertNotNull(phoneDto.getId()));
+        Assertions.assertTrue(userRepository.findById(userDto.getId()).isPresent());
     }
 
     @Test
     @DisplayName("Invalid user data should not be stored")
     public void testSignUpWithInvalidUserData() {
-        final UserDto USER_DTO = new UserDto(new LoginDto(), null, null, null, new HashSet<>());
-        final ErrorException[] ERROR_EXCEPTIONS = {
+        final UserDto userDto = new UserDto(new LoginDto(), null, null, null, new HashSet<>());
+        final ErrorException[] errorExceptions = {
                 new ErrorException("Field \"fullname\".",
                         "The field must have: minimum of 8 characters; maximum of 96 characters."),
                 new ErrorException("Field \"cpf\".", "The field must have: exactly 11 digits; no special characters."),
@@ -85,31 +86,31 @@ public class HomeServiceTest {
                 new ErrorException("Field \"email\".", "The field must have a maximum of 64 characters."),
         };
         try {
-            homeService.signUp(USER_DTO);
+            homeService.signUp(userDto);
         } catch (ValidationException exception) {
-            Assertions.assertArrayEquals(ERROR_EXCEPTIONS, exception.getErrors().toArray());
+            Assertions.assertArrayEquals(errorExceptions, exception.getErrors().toArray());
         }
     }
 
     @Test
     @DisplayName("Valid login data should be authenticated")
     public void testSignInWithValidUserData() {
-        final int TOKEN_LENGTH = 178;
-        final UserDto USER_DTO = defaultUserDto();
-        if (!loginRepository.existsByUsername(USER_DTO.getLogin().getUsername())) {
-            homeService.signUp(USER_DTO);
+        final int tokenLength = 178;
+        final UserDto userDto = defaultUserDto();
+        if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
+            homeService.signUp(userDto);
         }
-        final String TOKEN = homeService.signIn(defaultLoginDto());
-        Assertions.assertNotNull(TOKEN);
-        Assertions.assertEquals(TOKEN_LENGTH, TOKEN.length());
+        final String token = homeService.signIn(defaultLoginDto());
+        Assertions.assertNotNull(token);
+        Assertions.assertEquals(tokenLength, token.length());
     }
 
     @Test
     @DisplayName("Login with blank username should be invalid")
     public void testLoginWithBlankUsername() {
-        final int ERRORS_SIZE = 1;
-        final String CAUSE = "Field \"username\"";
-        final String MESSAGE = "Username cannot be null or empty.";
+        final int errorsSize = 1;
+        final String cause = "Field \"username\"";
+        final String message = "Username cannot be null or empty.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             homeService.signUp(userDto);
@@ -118,17 +119,17 @@ public class HomeServiceTest {
         try {
             homeService.signIn(userDto.getLogin());
         } catch (ValidationException exception) {
-            Assertions.assertEquals(ERRORS_SIZE, exception.getErrors().size());
-            Assertions.assertEquals(new ErrorException(CAUSE, MESSAGE), exception.getErrors().toArray()[0]);
+            Assertions.assertEquals(errorsSize, exception.getErrors().size());
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
         }
     }
 
     @Test
     @DisplayName("Login with blank password should be invalid")
     public void testLoginWithBlankPassword() {
-        final int ERRORS_SIZE = 1;
-        final String CAUSE = "Field \"password\"";
-        final String MESSAGE = "Password cannot be null or empty.";
+        final int errorsSize = 1;
+        final String cause = "Field \"password\"";
+        final String message = "Password cannot be null or empty.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             homeService.signUp(userDto);
@@ -137,16 +138,16 @@ public class HomeServiceTest {
         try {
             homeService.signIn(userDto.getLogin());
         } catch (ValidationException exception) {
-            Assertions.assertEquals(ERRORS_SIZE, exception.getErrors().size());
-            Assertions.assertEquals(new ErrorException(CAUSE, MESSAGE), exception.getErrors().toArray()[0]);
+            Assertions.assertEquals(errorsSize, exception.getErrors().size());
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
         }
     }
 
     @Test
     @DisplayName("Invalid login with incorrect username should not authenticated")
     public void testInvalidLoginWithIncorrectUsername() {
-        final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Username or password are incorrect.";
+        final String cause = "Fields \"username\" or \"password\".";
+        final String message = "Username or password are incorrect.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             homeService.signUp(userDto);
@@ -155,15 +156,15 @@ public class HomeServiceTest {
         try {
             homeService.signIn(userDto.getLogin());
         } catch (AuthenticationException exception) {
-            Assertions.assertEquals(new ErrorException(CAUSE, MESSAGE), exception.getError());
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getError());
         }
     }
 
     @Test
     @DisplayName("Invalid login with incorrect password should not authenticated")
     public void testInvalidLoginWithIncorrectPassword() {
-        final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Username or password are incorrect.";
+        final String cause = "Fields \"username\" or \"password\".";
+        final String message = "Username or password are incorrect.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             homeService.signUp(userDto);
@@ -172,15 +173,15 @@ public class HomeServiceTest {
         try {
             homeService.signIn(userDto.getLogin());
         } catch (AuthenticationException exception) {
-            Assertions.assertEquals(new ErrorException(CAUSE, MESSAGE), exception.getError());
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getError());
         }
     }
 
     @Test
     @DisplayName("Deactivated login should be not authenticated")
     public void testDeactivatedLogin() {
-        final String CAUSE = "Fields \"username\" or \"password\".";
-        final String MESSAGE = "Username or password are incorrect.";
+        final String cause = "Fields \"username\" or \"password\".";
+        final String message = "Username or password are incorrect.";
         UserDto userDto = defaultUserDto();
         if (!loginRepository.existsByUsername(userDto.getLogin().getUsername())) {
             userDto = homeService.signUp(userDto);
@@ -190,7 +191,47 @@ public class HomeServiceTest {
         try {
             homeService.signIn(defaultLoginDto());
         } catch (AuthenticationException exception) {
-            Assertions.assertEquals(new ErrorException(CAUSE, MESSAGE), exception.getError());
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getError());
+        }
+    }
+
+    @Test
+    @DisplayName("Existent CPF should return a recovery password question")
+    public void testGetRecoveryPasswordQuestionWithExistentCpf() {
+        final UserDto userDto = defaultUserDto();
+        final String recoveryPasswordQuestion = userDto.getLogin().getRecoveryPasswordQuestion();
+        final String cpf = userDto.getCpf();
+        if (!userRepository.existsByCpf(cpf)) {
+            homeService.signUp(userDto);
+        }
+        Assertions.assertEquals(recoveryPasswordQuestion, homeService.getRecoveryPasswordQuestion(cpf));
+    }
+
+    @Test
+    @DisplayName("Nonexistent CPF should not return a recovery password question")
+    public void testGetRecoveryPasswordQuestionWithNonexistentCpf() {
+        final String cause = "Path \"CPF\".";
+        final String message = "This CPF does not exist in the system. Please, sign up.";
+        final String cpf = "68874221070";
+        Assertions.assertFalse(userRepository.existsByCpf(cpf));
+        try {
+            homeService.getRecoveryPasswordQuestion(cpf);
+        } catch (NotFoundException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
+        }
+    }
+
+    @Test
+    @DisplayName("Invalid CPF should not return a recovery password question")
+    public void testGetRecoveryPasswordQuestionWithInvalidCpf() {
+        final String cause = "Path \"CPF\".";
+        final String message = "The field must have: exactly 11 digits; no special characters.";
+        final String cpf = "04629932802";
+        Assertions.assertFalse(userRepository.existsByCpf(cpf));
+        try {
+            homeService.getRecoveryPasswordQuestion(cpf);
+        } catch (ValidationException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
         }
     }
 }

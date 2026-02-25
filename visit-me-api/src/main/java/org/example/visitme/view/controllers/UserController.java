@@ -1,11 +1,8 @@
 package org.example.visitme.view.controllers;
 
-import java.util.Map;
-
 import org.example.visitme.view.exceptions.ExceptionResponse;
 import org.example.visitme.view.responses.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

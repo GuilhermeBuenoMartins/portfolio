@@ -50,6 +50,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("Test sign out with unregistered token")
     public void testSignOutWithUnregisteredToken() {
+        final String cause = "Header \"Authorization\".";
+        final String message = "Token invalid. You must to sign in.";
         final String token;
         final String username = "OtherUsername";
         UserDto userDto = defaultUserDto();
@@ -59,7 +61,11 @@ public class UserServiceTest {
             homeService.signUp(ConverterUtil.from(userDto, UserDto.class));
         }
         token = "Bearer ".concat(homeService.signIn(userDto.getLogin()));
-        Assertions.assertTrue(userService.signOut(token) > -1);
+        try {
+            userService.signOut(token.concat("invalid"));
+        } catch (AuthenticationException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getError());
+        }
     }
 
     @Test

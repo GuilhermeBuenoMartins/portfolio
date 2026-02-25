@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +48,13 @@ public class HomeControllerImpl implements HomeController {
     public ResponseEntity<Response<String>> signIn(@RequestBody SignInRequest request) {
         final String TOKEN = homeService.signIn(ConverterUtil.from(request, LoginDto.class));
         final Response<String> RESPONSE = new Response<>(Instant.now(), HttpStatus.OK, null, TOKEN);
+        return new ResponseEntity<>(RESPONSE, HttpStatus.OK);
+    }
+
+    @GetMapping("/recovery/{cpf}")
+    public ResponseEntity<Response<String>> getRecoveryPasswordQuestion(@PathVariable String cpf) {
+        final String QUESTION = homeService.getRecoveryPasswordQuestion(cpf);
+        final Response<String> RESPONSE = new Response<>(Instant.now(), HttpStatus.OK, null, QUESTION);
         return new ResponseEntity<>(RESPONSE, HttpStatus.OK);
     }
 }
