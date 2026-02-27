@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 @DisplayName("Test of Home Service")
@@ -230,6 +231,106 @@ public class HomeServiceTest {
         Assertions.assertFalse(userRepository.existsByCpf(cpf));
         try {
             homeService.getRecoveryPasswordQuestion(cpf);
+        } catch (ValidationException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
+        }
+    }
+
+    @Test
+    @DisplayName("Update password with valid answer and CPF should be successful")
+    public void testUpdatePasswordWithValidAnswerAndCpf() {
+        final String newPassword = "NewP@ssw0rd";
+        final String cpf = "69086398006";
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        UserDto userDto = defaultUserDto();
+        userDto.setCpf(cpf);
+        userDto.getLogin().setUsername("validAnswer&CPF");
+        if (!userRepository.existsByCpf(cpf)) {
+            homeService.signUp(userDto);
+        }
+        userDto = defaultUserDto();
+        userDto.setCpf(cpf);
+        userDto.getLogin().setUsername("validAnswer&CPF");
+        userDto.getLogin().setPassword(newPassword);
+        LoginDto loginDto = homeService.updatePassword(userDto);
+        Assertions.assertNotNull(loginDto);
+        Assertions.assertTrue(encoder.matches(newPassword, loginDto.getPassword()));
+    }
+
+    @Test
+    @DisplayName("Update password with valid answer and invalid CPF should not be successful")
+    public void testUpdatePasswordWithValidAnswerAndInvalidCpf() {
+        final String cause = "Path \"CPF\".";
+        final String message = "The field must have: exactly 11 digits; no special characters.";
+        final String newPassword = "NewP@ssw0rd";
+        final String cpf = "69086398005";
+        UserDto userDto = defaultUserDto();
+        if (!userRepository.existsByCpf(userDto.getCpf())) {
+            homeService.signUp(userDto);
+        }
+        userDto = defaultUserDto();
+        userDto.setCpf(cpf);
+        userDto.getLogin().setPassword(newPassword);
+        try {
+            homeService.updatePassword(userDto);
+        } catch (ValidationException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
+        }
+    }
+    
+    @Test
+    @DisplayName("Update password with valid answer and nonexistent CPF should not be successful")
+    public void testUpdatePasswordWithValidAnswerAndNonexistentCpf() {
+        final String cause = "Path \"CPF\".";
+        final String message = "This CPF does not exist in the system. Please, sign up.";
+        final String newPassword = "NewP@ssw0rd";
+        final String cpf = "68495419009";
+        UserDto userDto = defaultUserDto();
+        if (!userRepository.existsByCpf(userDto.getCpf())) {
+            homeService.signUp(userDto);
+        }
+        userDto.setCpf(cpf);
+        userDto.getLogin().setPassword(newPassword);
+        try {
+            homeService.updatePassword(userDto);
+        } catch (NotFoundException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
+        }
+    }
+
+    @Test
+    @DisplayName("Update password with invalid answer and valid CPF should not be successful")
+    public void testUpdatePasswordWithInvalidAnswerAndValidCpf() {
+        final String cause = "Field \"recoveryPasswordAnswer\".";
+        final String message = "Incorrect answer! You are unauthorized to change password.";
+        final String recoveryPasswordAnswer = "invalid answer";
+        final String newPassword = "NewP@ssw0rd";
+        UserDto userDto = defaultUserDto();
+        if (!userRepository.existsByCpf(userDto.getCpf())) {
+            homeService.signUp(userDto);
+        }
+        userDto.getLogin().setRecoveryPasswordAnswer(recoveryPasswordAnswer);
+        userDto.getLogin().setPassword(newPassword);
+        try {
+            homeService.updatePassword(userDto);
+        } catch (AuthenticationException exception) {
+            Assertions.assertEquals(new ErrorException(cause, message), exception.getError());
+        }
+    }
+    
+    @Test
+    @DisplayName("Update password with invalid password should not be successful")
+    public void testUpdatePasswordWithInvalidPassword() {
+        final String cause = "Field \"password\".";
+        final String message = "The field must have: minimum of 8 characters; minimum of 1 uppercase character; minimum of 1 special character; minimum of 1 digit.";
+        final String newPassword = "NewPassw0rd";
+        UserDto userDto = defaultUserDto();
+        if (!userRepository.existsByCpf(userDto.getCpf())) {
+            homeService.signUp(userDto);
+        }
+        userDto.getLogin().setPassword(newPassword);
+        try {
+            homeService.updatePassword(userDto);
         } catch (ValidationException exception) {
             Assertions.assertEquals(new ErrorException(cause, message), exception.getErrors().toArray()[0]);
         }

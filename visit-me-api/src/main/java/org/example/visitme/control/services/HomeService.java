@@ -11,6 +11,7 @@ import org.example.visitme.control.exceptions.NotFoundException;
 import org.example.visitme.control.exceptions.ValidationException;
 import org.example.visitme.control.services.validations.SignInValidationService;
 import org.example.visitme.control.services.validations.SignUpValidationService;
+import org.example.visitme.control.services.validations.UpdatePasswordValidationService;
 import org.example.visitme.model.entities.LoginEntity;
 import org.example.visitme.model.entities.UserEntity;
 import org.example.visitme.model.repositories.LoginRepository;
@@ -88,5 +89,31 @@ public class HomeService {
             throw new NotFoundException(cause, message);
         }
         return optional.get().getLogin().getRecoveryPasswordQuestion();
+    }
+
+    public LoginDto updatePassword(UserDto dto) {
+        final String cpf = dto.getCpf();
+        final String recoveryPasswordAnswer = dto.getLogin().getRecoveryPasswordAnswer().toLowerCase();
+        final String newPassword = dto.getLogin().getPassword();
+        UpdatePasswordValidationService validationService = new UpdatePasswordValidationService();
+        Set<ErrorException> errorExceptions = validationService.validate(dto);
+        if (errorExceptions.size() > 0) {
+            throw new ValidationException(errorExceptions);
+        }
+        Optional<UserEntity> optional = userRepository.findByCpf(cpf);
+        if (optional.isEmpty()) {
+            final String cause = "Path \"CPF\".";
+            final String message = "This CPF does not exist in the system. Please, sign up.";
+            throw new NotFoundException(cause, message);
+        }
+        UserEntity entity = optional.get();
+        if (!encoder.matches(recoveryPasswordAnswer, entity.getLogin().getRecoveryPasswordAnswer())) {
+            final String cause = "Field \"recoveryPasswordAnswer\".";
+            final String message = "Incorrect answer! You are unauthorized to change password.";
+            throw new AuthenticationException(new ErrorException(cause, message));
+        }
+        entity.getLogin().setPassword(encoder.encode(newPassword));
+        userRepository.save(entity);
+        return ConverterUtil.from(entity.getLogin(), LoginDto.class);
     }
 }
