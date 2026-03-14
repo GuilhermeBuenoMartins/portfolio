@@ -3,7 +3,7 @@
 ### 3.4 Reset Password
 
 ___
-**Status**: Design
+**Status**: Complete
 
 **Narrative**: As a user I want to reset my password so that I can authenticate me and change my password.
 
