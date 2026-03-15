@@ -17,7 +17,7 @@ ___
 
 **Technical Details**:
 
-1. The application must validation the user request through authorization token.
+1. The application must authorize user's request through the authorization token.
 2. The application can filter user's full name that contains a name.
 3. Request to list all user must be like:
 ```shell
