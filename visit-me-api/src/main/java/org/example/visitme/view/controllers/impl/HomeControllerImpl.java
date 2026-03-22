@@ -1,4 +1,4 @@
-package org.example.visitme.view.controllers;
+package org.example.visitme.view.controllers.impl;
 
 import java.time.Instant;
 
@@ -6,6 +6,7 @@ import org.example.visitme.control.dto.LoginDto;
 import org.example.visitme.control.dto.UserDto;
 import org.example.visitme.control.services.HomeService;
 import org.example.visitme.utils.ConverterUtil;
+import org.example.visitme.view.controllers.HomeController;
 import org.example.visitme.view.requests.LoginRequest;
 import org.example.visitme.view.requests.SignInRequest;
 import org.example.visitme.view.requests.SignUpRequest;

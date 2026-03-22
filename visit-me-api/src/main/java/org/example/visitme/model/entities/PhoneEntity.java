@@ -33,7 +33,7 @@ public class PhoneEntity implements Serializable {
 
     @JsonIgnore
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserEntity user;
     
 }

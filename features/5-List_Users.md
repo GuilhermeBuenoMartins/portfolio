@@ -3,7 +3,7 @@
 ### 3.5 List Users
 
 ___
-**Status**: Design
+**Status**: Complete
 
 **Narrative**: As user I want to list users so that I see everybody is in the system.
 

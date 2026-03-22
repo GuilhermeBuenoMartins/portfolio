@@ -3,7 +3,7 @@
 ### 3.6 Find User
 
 ___
-**Status**: Design
+**Status**: Implementation
 
 **Narrative**: As a user, I want to find another user in the system so that I visualize the found user details.
 

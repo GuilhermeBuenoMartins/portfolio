@@ -172,4 +172,98 @@ public class UserControllerImplTest {
                 .andExpectAll(statusCodeMatcher, timestampMatcher, statusMatcher, causeMatcher, messageMatcher)
                 .andDo(MockMvcResultHandlers.print());
     }
+
+    @Test
+    @DisplayName("User list users without fullname")
+    public void testListUsersWithoutFullname() throws Exception {
+        final LoginDto loginDto = new LoginDto("aUsername_01", "Pa$$w0rd", null, null);
+        final int pageSize = 5;
+        final int pageNumber = 0;
+        signUpUserList();
+        final String token = homeService.signIn(loginDto);
+        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().isOk();
+        final ResultMatcher contentTypeMatcher = MockMvcResultMatchers.content().contentType(MediaType. APPLICATION_JSON_VALUE);
+        final ResultMatcher pageNumberMatcher = MockMvcResultMatchers.jsonPath("$.number", Matchers.is(pageNumber));
+        final ResultMatcher pageSizeMatcher = MockMvcResultMatchers.jsonPath("$.size", Matchers.is(pageSize));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/users");
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
+        requestBuilder.header("Authorization", "Bearer ".concat(token));
+        mockMvc.perform(requestBuilder)
+                .andExpectAll(statusCodeMatcher, contentTypeMatcher, pageNumberMatcher, pageSizeMatcher)
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("User list users with fullname")
+    public void testListUsersWithFullname() throws Exception {
+        final LoginDto loginDto = new LoginDto("aUsername_01", "Pa$$w0rd", null, null);
+        final String fullName = "a Full";
+        final int totalElements = 6;
+        final int totalPages = 2;
+        final int pageSize = 5;
+        final int pageNumber = 1;
+        signUpUserList();
+        final String token = homeService.signIn(loginDto);
+        final ResultMatcher statusCodeMatcher = MockMvcResultMatchers.status().isOk();
+        final ResultMatcher contentTypeMatcher = MockMvcResultMatchers.content().contentType(MediaType. APPLICATION_JSON_VALUE);
+        final ResultMatcher totalContentMatcher = MockMvcResultMatchers.jsonPath("$.content", Matchers.hasSize(1));
+        final ResultMatcher totalElementsMatcher = MockMvcResultMatchers.jsonPath("$.totalElements", Matchers.is(totalElements));
+        final ResultMatcher totalPagesMatcher = MockMvcResultMatchers.jsonPath("$.totalPages", Matchers.is(totalPages));
+        final ResultMatcher pageNumberMatcher = MockMvcResultMatchers.jsonPath("$.number", Matchers.is(pageNumber));
+        final ResultMatcher pageSizeMatcher = MockMvcResultMatchers.jsonPath("$.size", Matchers.is(pageSize));
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v1/users");
+        requestBuilder.contentType(MediaType.APPLICATION_JSON);
+        requestBuilder.header("Authorization", "Bearer ".concat(token));
+        requestBuilder.param("fullname", fullName);
+        requestBuilder.param("page", String.valueOf(pageNumber));
+        mockMvc.perform(requestBuilder)
+                .andExpectAll(statusCodeMatcher, contentTypeMatcher, totalContentMatcher, totalElementsMatcher, 
+                    totalPagesMatcher, pageNumberMatcher, pageSizeMatcher)
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    private void signUpUserList() {
+        String[] fullnames = getFullnames();
+        String[] usernames = getUsernames();
+        String[] cpfs = getCpfs();
+        for (int i = 0; i < fullnames.length; i++) {
+            if (!loginRepository.existsByUsername(usernames[i])) {
+                UserDto userDto = defaultUserDto();
+                userDto.setFullName(fullnames[i]);
+                userDto.setCpf(cpfs[i]);
+                userDto.getLogin().setUsername(usernames[i]);
+                homeService.signUp(userDto);
+            }
+        }
+    }
+
+    private String[] getCpfs() {
+        return new String[]{
+            "17510305047",  // CPF 1
+            "15683190029",  // CPF 2
+            "26905091057",  // CPF 3
+            "45226917007",  // CPF 4
+            "05234522091",  // CPF 5
+            "59956949019"}; // CPF 6
+    }
+    
+    private String[] getUsernames() {
+        return new String[] {
+            "aUsername_01",
+            "aUsername_02",
+            "aUsername_03",
+            "aUsername_04",
+            "aUsername_05",
+            "aUsername_06"};
+    }
+
+    private String[] getFullnames() {
+        return new String[] {
+            "a Fullname 01",
+            "a Fullname 02",
+            "a Fullname 03",
+            "a Fullname 04",
+            "a Fullname 05",
+            "a Fullname 06"};
+    }
 }
